@@ -33,24 +33,39 @@ class Driver extends Model
 
     protected $guarded = ['id'];
 
-    protected $with = ['attendance', 'commisionWithdrawal', 'transaction'];
+    protected $primaryKey = 'id_driver';
+
+    protected $with = ['attendance', 'komisi'];
 
     public function attendance()
     {
-        return $this->hasMany(Attendance::class);
-    }
-    public function commisionWithdrawal()
-    {
-        return $this->hasMany(CommisionWithdrawal::class);
-    }
-    public function transaction()
-    {
-        return $this->hasMany(Transaction::class);
+        return $this->hasMany(Attendance::class, 'driver_id', 'id_driver');
     }
 
     public function user()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class, 'user_id', 'id');
+    }
+
+    public function komisi()
+    {
+        return $this->hasMany(Komisi::class, 'driver_id', 'id_driver');
+    }
+    public function tukar_poin()
+    {
+        return $this->hasMany(PenukaranPoin::class, 'driver_id', 'id_driver');
+    }
+
+    public function transaksi()
+    {
+        return $this->hasManyThrough(
+            Transaction::class,   // Model akhir (tujuan)
+            Attendance::class,      // Model perantara
+            'driver_id',        // Foreign key di tabel `stiker` yang mengarah ke `driver`
+            'stiker_id',        // Foreign key di tabel `transaksi` yang mengarah ke `stiker`
+            'id_driver',        // Primary key di tabel `driver`
+            'id_stiker'         // Primary key di tabel `stiker`
+        );
     }
 
     public static function generateToken(): string
@@ -59,24 +74,5 @@ class Driver extends Model
             '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ',
             10
         )), 0, 30);
-    }
-
-    public static function generateQrFile($token)
-    {
-        $data = route('attendance.token', ['token' => $token]);
-        $filename = 'qr/' . Str::uuid() . '.png';
-
-        $options = new QROptions([
-            'outputType' => QRCode::OUTPUT_IMAGE_PNG,
-            'eccLevel' => QRCode::ECC_L,
-            'scale' => 6,
-        ]);
-
-        $imageData = (new QRCode($options))->render($data);
-
-        // Simpan ke storage/app/public/qrcodes
-        Storage::disk('public')->put($filename, $imageData);
-
-       return $filename;
     }
 }

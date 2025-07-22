@@ -29,6 +29,8 @@
     --color-mine-200: #ffb22c;
     --color-mine-300: #854836;
 
+    --text-2xs: 0.625rem;
+
     --color-accent: var(--color-neutral-800);
     --color-accent-content: var(--color-neutral-800);
     --color-accent-foreground: var(--color-mine-200);

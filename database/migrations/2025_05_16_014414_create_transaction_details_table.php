@@ -13,12 +13,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('transaction_details', function (Blueprint $table) {
-            $table->id();
-            $table->foreignIdFor(Transaction::class);
-            $table->foreignIdFor(Product::class);
-            $table->integer('qty');
-            $table->integer('price');
+        Schema::create('transaksi_item', function (Blueprint $table) {
+            $table->id("id_item");
+            $table->foreignIdFor(Transaction::class, 'transaksi_id');
+            $table->foreignIdFor(Product::class, 'produk_id');
+            $table->integer('jumlah');
+            $table->integer('harga');
             $table->timestamps();
         });
     }

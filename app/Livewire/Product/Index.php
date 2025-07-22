@@ -11,20 +11,22 @@ class Index extends Component
     use WithPagination;
     public $product;
 
-    public function mount() {
+    public function mount()
+    {
         $this->product = Product::latest()->get();
     }
 
-    public function delete(Product $product) {
+    public function delete(Product $product)
+    {
         $product->delete();
 
         $this->product = Product::latest()->get();
-        session()->flash('success', 'Poof! The product has vanished like magic.');
+        session()->flash('success', 'Produk Berhasil Dihapus');
         $this->dispatch('close-delete-modal-' . $product->id);
     }
 
     public function render()
     {
-        return view('livewire.product.index',);
+        return view('livewire.product.index', ['title' => "Produk"]);
     }
 }

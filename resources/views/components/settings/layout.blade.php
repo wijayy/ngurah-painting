@@ -2,6 +2,10 @@
     <div class="me-10 w-full pb-4 md:w-[220px]">
         <flux:navlist>
             <flux:navlist.item :href="route('settings.profile')" wire:navigate>{{ __('Profile') }}</flux:navlist.item>
+            @if (Auth::user()->role == 'driver')
+
+            <flux:navlist.item :href="route('settings.bank')" wire:navigate>{{ __('Bank Account') }}</flux:navlist.item>
+            @endif
             <flux:navlist.item :href="route('settings.password')" wire:navigate>{{ __('Password') }}</flux:navlist.item>
             <flux:navlist.item :href="route('settings.appearance')" wire:navigate>{{ __('Appearance') }}</flux:navlist.item>
         </flux:navlist>

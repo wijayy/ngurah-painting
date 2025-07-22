@@ -3,7 +3,7 @@ extract(Flux::forwardedAttributes($attributes, ['name', 'multiple', 'size']));
 @endphp
 
 @props([
-'name' => $attributes->whereStartsWith('wire:model')->first(),
+'name' => $attributes->whereStartsWith('wire:model.live')->first(),
 'multiple' => null,
 'size' => null,
 'preview' => null,
@@ -13,12 +13,12 @@ extract(Flux::forwardedAttributes($attributes, ['name', 'multiple', 'size']));
 @php
 $classes = Flux::classes()->add('w-full flex items-center gap-4 space-y-4')->add('relative');
 
-$nameAttr = $attributes->whereStartsWith('wire:model')->first();
+$nameAttr = $attributes->whereStartsWith('wire:model.live')->first();
 $oldImageName = $nameAttr ? "old_{$nameAttr}" : 'old_image';
 
 [$styleAttributes, $attributes] = Flux::splitAttributes($attributes);
 
-// Cek jika preview disediakan (berasal dari nilai lama image pada wire:model)
+// Cek jika preview disediakan (berasal dari nilai lama image pada wire:model.live)
 $defaultPreview = $preview ? asset('storage/' . $preview) : '';
 @endphp
 
@@ -77,6 +77,6 @@ $defaultPreview = $preview ? asset('storage/' . $preview) : '';
     </div>
 
     {{-- HIDDEN INPUT UNTUK IMAGE LAMA --}}
-    <flux:input type="hidden" x-ref="old_image" wire:model="{{ $oldImageName }}" />
+    <flux:input type="hidden" x-ref="old_image" wire:model.live="{{ $oldImageName }}" />
 
 </div>

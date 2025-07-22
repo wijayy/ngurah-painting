@@ -13,12 +13,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('attendances', function (Blueprint $table) {
-            $table->id();
-            $table->foreignIdFor(User::class);
-            $table->foreignIdFor(Driver::class);
-            $table->integer('sticker_number');
-            $table->integer('person');
+        Schema::create('stiker', function (Blueprint $table) {
+            $table->id('id_stiker');
+            $table->foreignIdFor(Driver::class, 'driver_id');
+            $table->integer('nomor_stiker');
+            $table->integer('jumlah_customer');
             $table->timestamps();
         });
     }

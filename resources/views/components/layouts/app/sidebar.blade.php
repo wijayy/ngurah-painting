@@ -6,7 +6,8 @@
 </head>
 
 <body class="min-h-screen bg-mine-100 dark:bg-zinc-800">
-    <flux:sidebar  sticky stashable class="border-e border-zinc-200 print:hidden bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-900">
+    <flux:sidebar sticky stashable
+        class="border-e border-zinc-200 print:hidden bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-900">
         <flux:sidebar.toggle class="lg:hidden" icon="x-mark" />
 
         <a href="{{ route('dashboard') }}" class="me-5 flex items-center space-x-2 rtl:space-x-reverse" wire:navigate>
@@ -16,30 +17,34 @@
         <flux:navlist>
             <flux:navlist.item icon="home" :href="route('dashboard')" :current="request()->routeIs('dashboard')"
                 wire:navigate>{{ __('Dashboard') }}</flux:navlist.item>
-            <flux:navlist.item icon="archive-box" :href="route('product.index')" :current="request()->routeIs('product.*')"
-                wire:navigate>{{ __('Product') }}</flux:navlist.item>
-            <flux:navlist.item icon="home" :href="route('driver.index')" :current="request()->routeIs('driver.*')"
-                wire:navigate>{{ __('Driver') }}</flux:navlist.item>
-            <flux:navlist.item icon="home" :href="route('dashboard')" :current="request()->routeIs('dashboard')"
-                wire:navigate>{{ __('Dashboard') }}</flux:navlist.item>
-            <flux:navlist.item icon="home" :href="route('dashboard')" :current="request()->routeIs('dashboard')"
-                wire:navigate>{{ __('Dashboard') }}</flux:navlist.item>
-            <flux:navlist.item icon="home" :href="route('dashboard')" :current="request()->routeIs('dashboard')"
-                wire:navigate>{{ __('Dashboard') }}</flux:navlist.item>
+            @if (Auth::user()->role != 'driver')
+                <flux:navlist.item icon="archive-box" :href="route('product.index')"
+                    :current="request()->routeIs('product.*')" wire:navigate>{{ __('Produk') }}</flux:navlist.item>
+                <flux:navlist.item icon="home" :href="route('driver.index')" :current="request()->routeIs('driver.*')"
+                    wire:navigate>{{ __('Driver') }}</flux:navlist.item>
+                <flux:navlist.item icon="home" :href="route('transaction.index')"
+                    :current="request()->routeIs('transaction.*')" wire:navigate>{{ __('Transaksi') }}</flux:navlist.item>
+                <flux:navlist.item icon="banknotes" :href="route('withdrawal.index')"
+                    :current="request()->routeIs('withdrawal.*')" wire:navigate>{{ __('Tukar Poin') }}</flux:navlist.item>
+                <flux:navlist.item icon="home" :href="route('attendance.index')"
+                    :current="request()->routeIs('attendance.*')" wire:navigate>{{ __('Kunjungan') }}</flux:navlist.item>
+            @endif
+            @if (Auth::user()->role == 'admin')
+                @if (config('app.config'))
+                    <flux:navlist.item icon="wrench-screwdriver" :href="route('config')" :current="request()->routeIs('config')"
+                        wire:navigate>{{ __('Konfigurasi') }}</flux:navlist.item>
+                @endif
+                <flux:navlist.item icon="users" :href="route('user.index')" :current="request()->routeIs('user.*')"
+                    wire:navigate>{{ __('Staff') }}</flux:navlist.item>
+            @endif
+            @if (Auth::user()->role == 'driver')
+                <flux:navlist.item icon="banknotes" :href="route('withdrawal.request')"
+                    :current="request()->routeIs('withdrawal.*')" wire:navigate>{{ __('Tukar Poin') }}
+                </flux:navlist.item>
+            @endif
         </flux:navlist>
 
         <flux:spacer />
-
-        <flux:navlist variant="outline">
-            <flux:navlist.item icon="folder-git-2" href="https://github.com/laravel/livewire-starter-kit"
-                target="_blank">
-                {{ __('Repository') }}
-            </flux:navlist.item>
-
-            <flux:navlist.item icon="book-open-text" href="https://laravel.com/docs/starter-kits" target="_blank">
-                {{ __('Documentation') }}
-            </flux:navlist.item>
-        </flux:navlist>
 
         <!-- Desktop User Menu -->
         <flux:dropdown position="bottom" align="start">
@@ -133,7 +138,9 @@
 
     {{ $slot }}
 
+    @stack('scripts')
     @fluxScripts
+    @livewireScripts
 </body>
 
 </html>

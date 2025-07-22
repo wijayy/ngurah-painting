@@ -19,10 +19,10 @@ class TransactionDetailFactory extends Factory
     public function definition(): array
     {
         return [
-            'transaction_id' => Transaction::factory(),
-            'product_id' => Product::factory(),
-            'qty' => mt_rand(1, 10),
-            'price' => mt_rand(200, 500) * 1000
+            'transaksi_id' => Transaction::factory(),
+            'produk_id' => Product::factory(),
+            'jumlah' => mt_rand(1, 10),
+            'harga' => mt_rand(200, 500) * 1000
         ];
     }
 }

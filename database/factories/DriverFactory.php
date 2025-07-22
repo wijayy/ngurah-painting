@@ -20,12 +20,14 @@ class DriverFactory extends Factory
     {
         $name = fake()->name();
         return [
-            'user_id' => User::factory()->create(['role'=>'driver']),
+            'user_id' => User::factory()->create(['role'=>'driver', 'name'=>$name]),
             'bank' => 'BRI',
-            'qr' => 'qr/qr.png',
-            'account_name' => $name,
-            'account_number' => fake()->numberBetween(111111111, 999999999),
-            'token' => Driver::generateToken()
+            'nama_rekening' => $name,
+            'nomor_rekening' => fake()->numberBetween(111111111, 999999999),
+            'token' => Driver::generateToken(),
+            'no_ktp' => fake()->numberBetween(111111111, 999999999),
+            'no_telepon' => fake()->phoneNumber(),
+            'foto_ktp' => 'driver/foto_ktp.png',
         ];
     }
 }

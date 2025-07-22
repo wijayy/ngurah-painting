@@ -3,7 +3,7 @@
 @php $iconVariant = $iconVariant ??= $attributes->pluck('icon:variant'); @endphp
 
 @props([
-    'name' => $attributes->whereStartsWith('wire:model')->first(),
+    'name' => $attributes->whereStartsWith('wire:model.live')->first(),
     'iconVariant' => 'mini',
     'variant' => 'outline',
     'iconTrailing' => null,
@@ -20,6 +20,7 @@
     'icon' => null,
     'kbd' => null,
     'as' => null,
+    'max' => null,
 ])
 
 @php
@@ -28,8 +29,8 @@
 // If `:loading="false"` then never show loading.
 // If `:loading="true"` then always show loading.
 // If `:loading="foo"` then show loading when `foo` request is happening.
-// If `wire:model` then never show loading.
-// If `wire:model.live` then show loading when the `wire:model` value request is happening.
+// If `wire:model.live` then never show loading.
+// If `wire:model.live` then show loading when the `wire:model.live` value request is happening.
 $wireModel = $attributes->wire('model');
 $wireTarget = null;
 
@@ -134,6 +135,7 @@ $classes = Flux::classes()
 
             <input
                 type="{{ $type }}"
+                max="{{ $max }}"
                 {{-- Leave file inputs unstyled... --}}
                 {{ $attributes->except('class')->class($type === 'file' ? '' : $classes) }}
                 @isset ($name) name="{{ $name }}" @endisset

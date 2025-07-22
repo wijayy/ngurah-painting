@@ -3,8 +3,10 @@
 namespace App\Livewire\Driver;
 
 use App\Models\CommisionWithdrawal;
+use App\Models\PenukaranPoin;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
+use Livewire\Attributes\Layout;
 use Livewire\Component;
 
 class Show extends Component
@@ -29,16 +31,14 @@ class Show extends Component
         // $this->qr =
     }
 
-    public function decline(CommisionWithdrawal $withdrawal)
+    public function decline(PenukaranPoin $withdrawal)
     {
-        $withdrawal->update(['status' => 'declined']);
-        if ($this->slug) {
-            $this->user = User::where('slug', $this->slug)->first();
-        } else {
-            $this->user = Auth::user();
-        }
+        $withdrawal->update(['status' => 'ditolak']);
+        $withdrawal->driver->increment('poin', $withdrawal->poin);
+        session()->flash('success', "Sorry, {$withdrawal->driver->user->name}’s commission withdrawal didn’t go through—it was rejected.");
     }
 
+    #[Layout('components.layouts.app', ['title' => "Detail of Driver"])]
     public function render()
     {
         return view('livewire.driver.show');

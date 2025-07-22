@@ -28,12 +28,11 @@ class DatabaseSeeder extends Seeder
 
         }
 
-        $this->call(RegionSeeder::class);
         $this->call(SettingSeeder::class);
         $this->call(DriverSeeder::class);
         $this->call(ProductSeeder::class);
-        $this->call(TransactionSeeder::class);
         $this->call(AttendanceSeeder::class);
-        $this->call(CommisionWithdrawalSeeder::class);
+        $this->call(TransactionSeeder::class);
+        // $this->call(CommisionWithdrawalSeeder::class);
     }
 }

@@ -13,14 +13,17 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('drivers', function (Blueprint $table) {
-            $table->id();
+            $table->id('id_driver');
             $table->foreignIdFor(User::class);
             $table->string('bank')->nullable();
-            $table->string('account_name')->nullable();
-            $table->string('account_number')->nullable();
-            $table->string('qr');
+            $table->string('nama_rekening')->nullable();
+            $table->string('nomor_rekening')->nullable();
             $table->string('token');
-            $table->integer('komisi')->default(0);
+            $table->string('no_ktp');
+            $table->string('no_telepon');
+            $table->string('foto_ktp');
+            $table->boolean('status')->default(1);
+            $table->integer('poin')->default(0);
             $table->softDeletes();
             $table->timestamps();
         });

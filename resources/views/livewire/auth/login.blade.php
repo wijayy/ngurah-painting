@@ -11,7 +11,7 @@ use Livewire\Attributes\Layout;
 use Livewire\Attributes\Validate;
 use Livewire\Volt\Component;
 
-new #[Layout('components.layouts.auth')] class extends Component {
+new #[Layout('components.layouts.auth', ['title'=>'Login'])] class extends Component {
     #[Validate('required|string|email')]
     public string $email = '';
 
@@ -73,7 +73,7 @@ new #[Layout('components.layouts.auth')] class extends Component {
     }
 }; ?>
 
-<div class="flex flex-col gap-6">
+<div class="flex flex-col gap-6" >
     <x-auth-header :title="__('Log in to your account')" :description="__('Enter your email and password below to log in')" />
 
     <!-- Session Status -->
@@ -82,7 +82,7 @@ new #[Layout('components.layouts.auth')] class extends Component {
     <form wire:submit="login" class="flex flex-col gap-6">
         <!-- Email Address -->
         <flux:input
-            wire:model="email"
+            wire:model.live="email"
             :label="__('Email address')"
             type="email"
             required
@@ -94,7 +94,7 @@ new #[Layout('components.layouts.auth')] class extends Component {
         <!-- Password -->
         <div class="relative">
             <flux:input
-                wire:model="password"
+                wire:model.live="password"
                 :label="__('Password')"
                 type="password"
                 required
@@ -110,7 +110,7 @@ new #[Layout('components.layouts.auth')] class extends Component {
         </div>
 
         <!-- Remember Me -->
-        <flux:checkbox wire:model="remember" :label="__('Remember me')" />
+        <flux:checkbox wire:model.live="remember" :label="__('Remember me')" />
 
         <div class="flex items-center justify-end">
             <flux:button variant="primary" type="submit" class="w-full">{{ __('Log in') }}</flux:button>

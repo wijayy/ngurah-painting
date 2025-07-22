@@ -15,13 +15,21 @@ class SettingSeeder extends Seeder
     {
         $arr = [
             [
-                'key' => 'attendance_reward',
+                'key' => 'hadiah_kunjungan',
                 'value' => 15000
             ],
             [
-                'key' => 'commision_rate',
+                'key' => 'rasio_komisi',
                 'value' => 50
-            ]
+            ],
+            [
+                'key' => 'minimum_penukaran_poin',
+                'value' => 10
+            ],
+            [
+                'key' => 'max_nonaktif',
+                'value' => 90
+            ],
         ];
 
         foreach ($arr as $key => $item) {

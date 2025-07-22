@@ -5,7 +5,7 @@ use Illuminate\Validation\ValidationException;
 use Livewire\Attributes\Layout;
 use Livewire\Volt\Component;
 
-new #[Layout('components.layouts.auth')] class extends Component {
+new #[Layout('components.layouts.auth', ['title'=>'Confirm Your Password'])] class extends Component {
     public string $password = '';
 
     /**
@@ -44,7 +44,7 @@ new #[Layout('components.layouts.auth')] class extends Component {
     <form wire:submit="confirmPassword" class="flex flex-col gap-6">
         <!-- Password -->
         <flux:input
-            wire:model="password"
+            wire:model.live="password"
             :label="__('Password')"
             type="password"
             required

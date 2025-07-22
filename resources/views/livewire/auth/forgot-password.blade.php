@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Password;
 use Livewire\Attributes\Layout;
 use Livewire\Volt\Component;
 
-new #[Layout('components.layouts.auth')] class extends Component {
+new #[Layout('components.layouts.auth', ['title'=>'Forgot Your Password'])] class extends Component {
     public string $email = '';
 
     /**
@@ -31,7 +31,7 @@ new #[Layout('components.layouts.auth')] class extends Component {
     <form wire:submit="sendPasswordResetLink" class="flex flex-col gap-6">
         <!-- Email Address -->
         <flux:input
-            wire:model="email"
+            wire:model.live="email"
             :label="__('Email Address')"
             type="email"
             required

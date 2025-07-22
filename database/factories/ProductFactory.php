@@ -17,10 +17,8 @@ class ProductFactory extends Factory
     public function definition(): array
     {
         return [
-            'name' => fake()->sentence(2, false),
-            'stock' => mt_rand(1, 10 ),
-            'price' => mt_rand(200, 500) * 1000,
-            'image' => 'product/product.jpg'
+            'nama' => fake()->sentence(2, false),
+            'harga' => mt_rand(200, 500) * 1000,
         ];
     }
 }

@@ -21,7 +21,7 @@ class Product extends Model
     {
         return [
             'slug' => [
-                'source' => 'name',
+                'source' => 'nama',
                 'onUpdate' => true
             ]
         ];
@@ -29,8 +29,10 @@ class Product extends Model
 
     protected $with = ['transactionDetail'];
     protected $guarded = ['id'];
+    protected $table = 'produk';
+    protected $primaryKey = 'id_produk';
 
     public function transactionDetail() {
-        return $this->hasMany(TransactionDetail::class);
+        return $this->hasMany(TransactionDetail::class, 'produk_id', 'id_produk');
     }
 }

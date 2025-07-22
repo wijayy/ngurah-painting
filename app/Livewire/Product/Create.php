@@ -18,18 +18,7 @@ class Create extends Component
         $rules = [
             'name' => 'required|string|max:255',
             'price' => 'required|numeric|min:0',
-            'stock' => 'required|integer|min:0',
         ];
-
-        // Tambahkan aturan gambar
-        if ($this->product) {
-            // Edit
-            $rules['image'] = 'nullable|image|max:2048';
-        } else {
-            // Create
-            $rules['image'] = 'required|image|max:2048';
-        }
-
         return $rules;
     }
 
@@ -37,12 +26,10 @@ class Create extends Component
     {
         if ($slug) {
             $product = Product::where('slug', $slug)->firstOrFail();
-            $this->product = $product->id;
-            $this->name = $product->name;
-            $this->price = $product->price;
-            $this->stock = $product->stock;
-            $this->existingImage = $product->image;
-            $this->title = "Edit Product $this->name";
+            $this->product = $product->id_produk;
+            $this->name = $product->nama;
+            $this->price = $product->harga;
+            $this->title = "Edit Produk $this->name";
         } else {
             $this->title = "Add New Product";
         }
@@ -52,30 +39,19 @@ class Create extends Component
     {
         $validated = $this->validate();
 
-        $imagePath = $this->existingImage;
-
-        if ($this->image) {
-            $imagePath = $this->image->store('product');
-
-            if ($this->existingImage) {
-                Storage::delete($this->existingImage);
-            }
-        }
         Product::updateOrCreate(
-            ['id' => $this->product],
+            ['id_produk' => $this->product],
             [
-                'name' => $this->name,
-                'price' => $this->price,
-                'stock' => $this->stock,
-                'image' => $imagePath,
+                'nama' => $this->name,
+                'harga' => $this->price,
             ]
         );
-        session()->flash('success', $this->product ? 'All set! Your product just had a mini makeover.' : 'Ta-da! Your product is born and ready to shine.');
+        session()->flash('success', $this->product ? 'Produk Berhasil Diubah' : 'Produk Berhasil Ditambahkan');
         return redirect()->route('product.index');
     }
 
     public function render()
     {
-        return view('livewire.product.create');
+        return view('livewire.product.create', ['title' => "{$this->title}"]);
     }
 }

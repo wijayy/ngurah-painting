@@ -18,7 +18,9 @@ class AttendanceSeeder extends Seeder
         $users = Driver::all();
 
         foreach ($users as $key => $user) {
-            Attendance::factory(5)->recycle([$user, User::all()])->create();
+            Attendance::factory()->recycle([$user])->create([
+                'nomor_stiker' => $key+1,
+            ]);
         }
     }
 }

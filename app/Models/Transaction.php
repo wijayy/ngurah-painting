@@ -6,12 +6,11 @@ use Carbon\Carbon;
 use Cviebrock\EloquentSluggable\Sluggable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Transaction extends Model
 {
     /** @use HasFactory<\Database\Factories\TransactionFactory> */
-    use HasFactory, SoftDeletes, Sluggable;
+    use HasFactory, Sluggable;
 
     /**
      * Return the sluggable configuration array for this model.
@@ -22,30 +21,31 @@ class Transaction extends Model
     {
         return [
             'slug' => [
-                'source' => 'transaction_number',
+                'source' => 'nomor_transaksi',
                 'onUpdate' => true
             ]
         ];
     }
 
-    protected $guarded = ['id'];
+    protected $table = 'transaksi';
+    protected $primaryKey = 'id_transaksi';
+    protected $guarded = ['id_transaksi'];
     // protected $with = ['transactionDetail'];
 
     public function transactionDetail()
     {
-        return $this->hasMany(TransactionDetail::class);
+        return $this->hasMany(TransactionDetail::class, 'transaksi_id', 'id_transaksi');
     }
 
-    public function user()
+    public function stiker()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(Attendance::class, 'stiker_id', 'id_stiker');
     }
 
-    public function driver()
+    public function komisi()
     {
-        return $this->belongsTo(Driver::class);
+        return $this->hasOne(Komisi::class, 'transaksi_id', 'id_transaksi');
     }
-
 
     public static function transactionNumberGenerator()
     {
@@ -54,18 +54,18 @@ class Transaction extends Model
 
         // Hitung jumlah transaksi yang sudah ada hari ini
         $lastTransaction = self::whereDate('created_at', Carbon::today())
-            ->orderBy('id', 'desc')
+            ->orderBy('id_transaksi', 'desc')
             ->first();
 
         $nextNumber = 1;
 
         if ($lastTransaction) {
-            $lastNumber = (int) substr($lastTransaction->transaction_number, -4);
+            $lastNumber = (int) substr($lastTransaction->nomor_transaksi, -4);
             $nextNumber = $lastNumber + 1;
         }
 
         $formattedNumber = str_pad($nextNumber, 4, '0', STR_PAD_LEFT);
 
-        return $prefix . '-' . $formattedNumber;
+        return $prefix . $formattedNumber;
     }
 }

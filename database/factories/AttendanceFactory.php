@@ -19,10 +19,9 @@ class AttendanceFactory extends Factory
     public function definition(): array
     {
         return [
-            'user_id' => User::factory(),
             'driver_id' => Driver::factory(),
-            'sticker_number' => 4,
-            'person' => 4,
+            'nomor_stiker' => 4,
+            'jumlah_customer' => 4,
         ];
     }
 }
