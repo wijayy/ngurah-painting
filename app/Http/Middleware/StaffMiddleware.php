@@ -17,7 +17,7 @@ class StaffMiddleware
     public function handle(Request $request, Closure $next): Response
     {
         if (!Auth::check() || Auth::user()->role !== 'staff') {
-            abort(403, 'Access denied. Admins only.');
+            abort(403, 'Access denied. Staff only.');
         }
 
         return $next($request);

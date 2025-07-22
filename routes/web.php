@@ -40,31 +40,14 @@ Route::middleware(['auth', 'verify'])->group(function () {
 });
 
 Route::middleware(['auth', 'verify', 'user'])->group(function () {
-    Route::get('produk', ProductIndex::class)->name('product.index');
-    Route::get('add-produk', ProductCreate::class)->name('product.create');
-    Route::get('edit-produk/{slug}', ProductCreate::class)->name('product.edit');
-
-    Route::get('driver', DriverIndex::class)->name('driver.index');
-    Route::get('tambah-driver', DriverCreate::class)->name('driver.create');
-    Route::get('detail-driver/{slug}', DriverShow::class)->name('driver.show');
 
     Route::get('kunjungan', AttendanceIndex::class)->name('attendance.index');
-    Route::get('kunjungan/{token}', AttendanceToken::class)->name('attendance.token');
-    Route::get('scan', [AttendanceController::class, 'index'])->name('attendance.scan');
-
     Route::get('transaksi/', TransactionIndex::class)->name('transaction.index');
-
-
-
-    Route::get('tukar-poin/', WithdrawalIndex::class)->name('withdrawal.index');
-    Route::get('terima-tukar-poin/{token}', WithdrawalAccepted::class)->name('withdrawal.token');
-
-
 });
 
 require __DIR__ . '/auth.php';
 
-Route::middleware(['auth', 'verify', 'admin'])->group(function () {
+Route::middleware(['auth', 'verify', 'staff'])->group(function () {
     Route::get('catat_kunjungan', AttendanceCreate::class)->name('attendance.create');
     Route::get('tambah-transaksi/', TransactionCreate::class)->name('transaction.create');
     Route::get('transaksi/{slug}/cairkan-komisi', TransactionWithdrawal::class)->name('transaction.withdrawal');
@@ -75,6 +58,20 @@ Route::middleware(['auth', 'verify', 'admin'])->group(function () {
     Route::get('add-staff/', UserCreate::class)->name('user.create');
 
     Route::get('business-configuration', Config::class)->name('config');
+
+    Route::get('produk', ProductIndex::class)->name('product.index');
+    Route::get('add-produk', ProductCreate::class)->name('product.create');
+    Route::get('edit-produk/{slug}', ProductCreate::class)->name('product.edit');
+
+    Route::get('driver', DriverIndex::class)->name('driver.index');
+    Route::get('tambah-driver', DriverCreate::class)->name('driver.create');
+    Route::get('detail-driver/{slug}', DriverShow::class)->name('driver.show');
+
+    Route::get('kunjungan/{token}', AttendanceToken::class)->name('attendance.token');
+    Route::get('scan', [AttendanceController::class, 'index'])->name('attendance.scan');
+
+    Route::get('tukar-poin/', WithdrawalIndex::class)->name('withdrawal.index');
+    Route::get('terima-tukar-poin/{token}', WithdrawalAccepted::class)->name('withdrawal.token');
 });
 
 Route::middleware(['auth', 'verify', 'driver'])->group(function () {
