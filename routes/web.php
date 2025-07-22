@@ -51,6 +51,7 @@ Route::middleware(['auth', 'verify', 'staff'])->group(function () {
     Route::get('catat_kunjungan', AttendanceCreate::class)->name('attendance.create');
     Route::get('tambah-transaksi/', TransactionCreate::class)->name('transaction.create');
     Route::get('transaksi/{slug}/cairkan-komisi', TransactionWithdrawal::class)->name('transaction.withdrawal');
+    Route::get('scan', [AttendanceController::class, 'index'])->name('attendance.scan');
 });
 
 Route::middleware(['auth', 'verify', 'admin'])->group(function () {
@@ -68,7 +69,7 @@ Route::middleware(['auth', 'verify', 'admin'])->group(function () {
     Route::get('detail-driver/{slug}', DriverShow::class)->name('driver.show');
 
     Route::get('kunjungan/{token}', AttendanceToken::class)->name('attendance.token');
-    Route::get('scan', [AttendanceController::class, 'index'])->name('attendance.scan');
+
 
     Route::get('tukar-poin/', WithdrawalIndex::class)->name('withdrawal.index');
     Route::get('terima-tukar-poin/{token}', WithdrawalAccepted::class)->name('withdrawal.token');
