@@ -39,7 +39,7 @@ Route::middleware(['auth', 'verify'])->group(function () {
     Route::view('dashboard', 'dashboard')->name('dashboard');
 });
 
-Route::middleware(['auth', 'verify', 'staff'])->group(function () {
+Route::middleware(['auth', 'verify', 'user'])->group(function () {
     Route::get('produk', ProductIndex::class)->name('product.index');
     Route::get('add-produk', ProductCreate::class)->name('product.create');
     Route::get('edit-produk/{slug}', ProductCreate::class)->name('product.edit');
@@ -49,13 +49,11 @@ Route::middleware(['auth', 'verify', 'staff'])->group(function () {
     Route::get('detail-driver/{slug}', DriverShow::class)->name('driver.show');
 
     Route::get('kunjungan', AttendanceIndex::class)->name('attendance.index');
-    Route::get('catat_kunjungan', AttendanceCreate::class)->name('attendance.create');
     Route::get('kunjungan/{token}', AttendanceToken::class)->name('attendance.token');
     Route::get('scan', [AttendanceController::class, 'index'])->name('attendance.scan');
 
     Route::get('transaksi/', TransactionIndex::class)->name('transaction.index');
-    Route::get('tambah-transaksi/', TransactionCreate::class)->name('transaction.create');
-    Route::get('transaksi/{slug}/cairkan-komisi', TransactionWithdrawal::class)->name('transaction.withdrawal');
+
 
 
     Route::get('tukar-poin/', WithdrawalIndex::class)->name('withdrawal.index');
@@ -65,6 +63,12 @@ Route::middleware(['auth', 'verify', 'staff'])->group(function () {
 });
 
 require __DIR__ . '/auth.php';
+
+Route::middleware(['auth', 'verify', 'admin'])->group(function () {
+    Route::get('catat_kunjungan', AttendanceCreate::class)->name('attendance.create');
+    Route::get('tambah-transaksi/', TransactionCreate::class)->name('transaction.create');
+    Route::get('transaksi/{slug}/cairkan-komisi', TransactionWithdrawal::class)->name('transaction.withdrawal');
+});
 
 Route::middleware(['auth', 'verify', 'admin'])->group(function () {
     Route::get('staff/', action: UserIndex::class)->name('user.index');

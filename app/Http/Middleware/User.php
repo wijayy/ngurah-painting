@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
 
-class StaffMiddleware
+class User
 {
     /**
      * Handle an incoming request.
@@ -16,10 +16,9 @@ class StaffMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if (!Auth::check() || Auth::user()->role !== 'staff') {
-            abort(403, 'Access denied. Admins only.');
+        if (!Auth::check() || !in_array(Auth::user()->role, ['admin', 'staff'])) {
+            abort(403, 'Access denied. Staff or Admin only.');
         }
-
         return $next($request);
     }
 }

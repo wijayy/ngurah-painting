@@ -3,6 +3,7 @@
 use App\Http\Middleware\AdminMiddleware;
 use App\Http\Middleware\DriverMiddleware;
 use App\Http\Middleware\StaffMiddleware;
+use App\Http\Middleware\User;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -17,6 +18,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'verify' => \App\Http\Middleware\VerifyEmail::class,
             'admin' => AdminMiddleware::class,
+            'user' => User::class,
             'staff' => StaffMiddleware::class,
             'driver' => DriverMiddleware::class,
         ]);
