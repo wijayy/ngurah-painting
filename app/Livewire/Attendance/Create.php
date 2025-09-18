@@ -20,7 +20,6 @@ class Create extends Component
         } else {
         $this->sticker = 1;
         }
-
     }
 
     public function qrScanned($token)

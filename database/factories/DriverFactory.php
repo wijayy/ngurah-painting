@@ -20,14 +20,18 @@ class DriverFactory extends Factory
     {
         $name = fake()->name();
         return [
-            'user_id' => User::factory()->create(['role'=>'driver', 'name'=>$name]),
+            'user_id' => User::factory(),
             'bank' => 'BRI',
+            'membership_no' => Driver::memberNumberGenerator(),
             'nama_rekening' => $name,
             'nomor_rekening' => fake()->numberBetween(111111111, 999999999),
             'token' => Driver::generateToken(),
             'no_ktp' => fake()->numberBetween(111111111, 999999999),
+            'no_sim' => fake()->numberBetween(111111111, 999999999),
+            'sim_berlaku_hingga' => fake()->date(),
             'no_telepon' => fake()->phoneNumber(),
-            'foto_ktp' => 'driver/foto_ktp.png',
+            'url_foto_ktp' => 'http://ngurah-painting-app.me',
+            'url_foto_sim' => 'http://ngurah-painting-app.me',
         ];
     }
 }

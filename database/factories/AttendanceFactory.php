@@ -21,7 +21,12 @@ class AttendanceFactory extends Factory
         return [
             'driver_id' => Driver::factory(),
             'nomor_stiker' => 4,
-            'jumlah_customer' => 4,
+            'jumlah_wisatawan' => 4,
+            'tanggal_waktu' => $this->faker->dateTimeBetween('-1 month', 'now'),
+            'expired_at' => $this->faker->dateTimeBetween('now', '+1 month'),
+            'used_at' => null,
+            'nama' => $this->faker->name(),
+            'wa' => $this->faker->phoneNumber(),
         ];
     }
 }

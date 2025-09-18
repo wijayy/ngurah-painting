@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\Driver;
+use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -13,6 +14,10 @@ class DriverSeeder extends Seeder
      */
     public function run(): void
     {
-        Driver::factory(20)->create();
+        foreach (range(1, 20) as $key => $item) {
+            $name = fake()->name();
+            $user = User::factory()->create(['email' => "driver$item@gmail.com", 'role'=>'driver', 'name'=>$name]);
+            Driver::factory(1)->recycle($user)->create(['nama_rekening'=>$name]);
+        }
     }
 }

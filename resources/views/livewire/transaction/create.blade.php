@@ -1,51 +1,68 @@
 <div class="">
-    <flux:session>Add Transaction</flux:session>
+    <flux:session>{{ $title }}</flux:session>
 
-    <form wire:submit='save' class="grid grid-cols-1 lg:grid-cols-3 bg-white dark:bg-neutral-700 rounded p-4 gap-4">
-        <div class="lg:col-span-2">
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+    <form wire:submit='save' class="bg-white dark:bg-neutral-700 rounded p-4 gap-4">
+        <div class="">
+            <div class="grid grid-cols-1 items-start lg:grid-cols-2 gap-4">
+                <flux:input wire:model.live="nomor_transaksi" :label="'Nomor Transaksi'" type="text" readonly>
+                </flux:input>
+                <flux:input wire:model.live="tanggal" :label="'Tanggal'" type="datetime-local" required></flux:input>
+                <div class="">
+                    <flux:input wire:model.live='stiker' value="6" wire:input='changeStiker' only-number label="Nomor stiker">
+                    </flux:input>
+                    @if ($driver)
+                        <div class="text-xs mt-4 lg:text-sm text-sky-400">Komisi diberikan kepada {{ $driver->user->name ?? '' }}
+                        </div>
+                    @elseif($driver === null && $stiker)
+                        <div class="text-xs mt-4 lg:text-sm text-red-500">Driver tidak ditemukan</div>
+                    @endif
+                </div>
+                <flux:select wire:model.live='status' label="Status">
+                    <flux:select.option value="selesai">Selesai</flux:select.option>
+                    <flux:select.option value="draft">Draft</flux:select.option>
+                    <flux:select.option value="dibatalkan">Dibatalkan</flux:select.option>
+                </flux:select>
             </div>
             <div class="mt-4 space-y-4">
                 @foreach ($products as $index => $product)
                     <div class="grid grid-cols-12 items-end gap-4">
-                        <div class="col-span-9">
-                            <flux:select wire:model="products.{{ $index }}.name" wire:change='updatePrice' :label="'Nama Produk'" required>
+                        <div class="col-span-6">
+                            <flux:select wire:model="products.{{ $index }}.produk_id"
+                                wire:change="produkChanged({{ $index }})" :label="'Nama Produk'" required>
+                                <flux:select.option value="">Pilih Produk</flux:select.option>
                                 @foreach ($allProduct as $item)
-                                    <flux:select.option value="{{ $item->id_produk }}">{{ $item->nama }}</flux:select.option>
+                                    <flux:select.option value="{{ $item->id_produk }}">{{ $item->nama }}
+                                    </flux:select.option>
                                 @endforeach
                             </flux:select>
                         </div>
                         <div class="col-span-2">
-                            <flux:input wire:model="products.{{ $index }}.qty" min="1" wire:input='updatePrice' :label="'Jumlah'" type="number"
-                                autocomplete="none" required>
+                            <flux:input wire:model="products.{{ $index }}.jumlah" wire:input='countTotal()'
+                                min="1" :label="'Jumlah'" type="number" autocomplete="none" required>
+                            </flux:input>
+                        </div>
+                        <div class="col-span-3">
+                            <flux:input wire:model="products.{{ $index }}.harga" wire:input='countTotal()'
+                                min="1" :label="'Harga'" type="number" autocomplete="none" required>
                             </flux:input>
                         </div>
                         {{-- <div class="">{{ $product['max'] }}</div> --}}
-                        <flux:button variant="danger" icon="trash" type="button" wire:click="removeProduct({{ $index }})"
-                            class="text-red-500 hover:underline"></flux:button>
+                        <flux:button type="button" wire:click="removeProdukItem({{ $index }})">Hapus
+                        </flux:button>
                     </div>
                 @endforeach
-                <flux:button type="button"  wire:click="addProduct" class="mt-2 border rounded p-2 w-full text-center">
-                    <flux:icon.plus></flux:icon.plus>
+                <flux:button icon="plus" type="button" wire:click="addProdukItem" class="mt-2">
+                    Tambah Item
                 </flux:button>
             </div>
-        </div>
-        <div class="space-y-4 border-t-2 border-black pt-4 lg:pt-0 lg:border-s-2 lg:border-t-0 lg:pl-4">
-            <flux:select wire:model="payment" :label="'Metode Pembayaran'">
-                <flux:select.option value="cash">Cash</flux:select.option>
-                <flux:select.option value="transfer">Transfer</flux:select.option>
-            </flux:select>
-            <flux:input wire:model="sticker" wire:input='changeSticker' :label="'Nomor Stiker'" type="number"></flux:input>
-            <div class="text-xs lg:text-sm">{{ $driver->user->name ?? '' }}</div>
-            <div class="mt-4 grid grid-cols-4">
-                <div class="col-span-3">Total Transaction</div>
-                <div class="text-end">IDR {{ number_format($total/1000,0, ',', '.') }}K</div>
-                @if ($driver)
-                    <div class="col-span-3">Commission Given</div>
-                    <div class="text-end">IDR {{ number_format($commission/1000,0, ',', '.')  }}K</div>
-                @endif
+            <div class="rounded p-2 md:w-1/2 mt-4 shadow">
+                <flux:input format_number wire:model.live='total' label='Total harga' readonly></flux:input>
             </div>
-            <flux:button type="submit" variant="primary">Submit</flux:button>
+        </div>
+
+        <div class="mt-4 flex gap-4">
+            <flux:button type="submit" variant="primary">Simpan Transaksi</flux:button>
+            <flux:button as href="{{ route('transaction.index') }}">Batal</flux:button>
         </div>
     </form>
 

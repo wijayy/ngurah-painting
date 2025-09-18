@@ -15,9 +15,15 @@ return new class extends Migration
         Schema::create('pembayaran', function (Blueprint $table) {
             $table->id("id_pembayaran");
             $table->foreignIdFor(Komisi::class, 'komisi_id');
-            $table->integer('komisi');
-            $table->enum('metode_pembayaran', ['cash', 'transfer']);
-            $table->string('bukti_pembayaran');
+            $table->integer('amount');
+            $table->enum('metode', ['cash', 'transfer']);
+            $table->string('bukti_transfer_url');
+            $table->string('bank')->nullable();
+            $table->string('nama_rekening')->nullable();
+            $table->string('nomor_rekening')->nullable();
+            $table->string('nomor_referensi')->nullable();
+            $table->string('catatan')->nullable();
+            $table->string('status')->default('pending');
             $table->timestamps();
         });
     }

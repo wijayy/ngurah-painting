@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use chillerlan\QRCode\QRCode;
 use chillerlan\QRCode\QROptions;
 use Cviebrock\EloquentSluggable\Sluggable;
@@ -74,5 +75,34 @@ class Driver extends Model
             '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ',
             10
         )), 0, 30);
+    }
+
+    public static function memberNumberGenerator()
+    {
+        $date = Carbon::now()->format('Ymd');
+        $prefix = 'MBR-';
+
+        // Hitung jumlah transaksi yang sudah ada hari ini
+        $lastTransaction = self::orderBy('id_driver', 'desc')
+            ->first();
+
+        $nextNumber = 1;
+
+        if ($lastTransaction) {
+            $lastNumber = (int) substr($lastTransaction->membership_no, -4);
+            $nextNumber = $lastNumber + 1;
+        }
+
+        $formattedNumber = str_pad($nextNumber, 4, '0', STR_PAD_LEFT);
+
+        return $prefix . $formattedNumber;
+    }
+
+        protected function casts(): array
+    {
+        return [
+            'sim_berlaku_hingga' => 'datetime',
+            // 'password' => 'hashed',
+        ];
     }
 }

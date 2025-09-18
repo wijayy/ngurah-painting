@@ -3,7 +3,7 @@
 @php $iconVariant = $iconVariant ??= $attributes->pluck('icon:variant'); @endphp
 
 @props([
-    'name' => $attributes->whereStartsWith('wire:model.live')->first(),
+    'name' => $attributes->whereStartsWith('wire:model')->first(),
     'iconVariant' => 'mini',
     'variant' => 'outline',
     'iconTrailing' => null,
@@ -20,7 +20,8 @@
     'icon' => null,
     'kbd' => null,
     'as' => null,
-    'max' => null,
+    'only_number' => null,
+    'format_number' => null,
 ])
 
 @php
@@ -29,8 +30,8 @@
 // If `:loading="false"` then never show loading.
 // If `:loading="true"` then always show loading.
 // If `:loading="foo"` then show loading when `foo` request is happening.
-// If `wire:model.live` then never show loading.
-// If `wire:model.live` then show loading when the `wire:model.live` value request is happening.
+// If `wire:model` then never show loading.
+// If `wire:model.live` then show loading when the `wire:model` value request is happening.
 $wireModel = $attributes->wire('model');
 $wireTarget = null;
 
@@ -135,11 +136,12 @@ $classes = Flux::classes()
 
             <input
                 type="{{ $type }}"
-                max="{{ $max }}"
                 {{-- Leave file inputs unstyled... --}}
                 {{ $attributes->except('class')->class($type === 'file' ? '' : $classes) }}
                 @isset ($name) name="{{ $name }}" @endisset
                 @if ($mask) x-mask="{{ $mask }}" @endif
+                @if ($only_number) oninput="this.value = this.value.replace(/[^0-9]/g, '')" @endif
+                @if ($format_number) onchange="this.value = this.value.replace(/[^0-9]/g, '').replace(/\B(?=(\d{3})+(?!\d))/g, '.')" @endif
                 @if ($invalid) aria-invalid="true" data-invalid @endif
                 @if (is_numeric($size)) size="{{ $size }}" @endif
                 data-flux-control

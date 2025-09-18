@@ -1,142 +1,91 @@
-@php
-    $months = [
-        1 => 'Jan',
-        2 => 'Feb',
-        3 => 'Mar',
-        4 => 'Apr',
-        5 => 'May',
-        6 => 'Jun',
-        7 => 'Jul',
-        8 => 'Aug',
-        9 => 'Sep',
-        10 => 'Oct',
-        11 => 'Nov',
-        12 => 'Dec',
-    ]
-@endphp
-
 <div>
     <flux:session>Transaksi</flux:session>
     <div class="rounded p-4 bg-white dark:bg-neutral-700">
         <form class="flex gap-4 items-center print:hidden">
-            <flux:select wire:model.live="month" wire:change="changeDate" class="w-fit!">
-                @foreach ($months as $key => $item)
-                    <flux:select.option value="{{ $key }}">{{ $item }}</flux:select.option>
-                @endforeach
+            <flux:input wire:model.live='search' placeholder="Cari nomor_transaksi/nomor_stiker"></flux:input>
+            <flux:select wire:model.live="status" class="w-fit!">
+                <flux:select.option value="">Semua Status</flux:select.option>
+                <flux:select.option value="selesai">Selesai</flux:select.option>
+                <flux:select.option value="draft">Draft</flux:select.option>
+                <flux:select.option value="dibatalkan">Dibatalkan</flux:select.option>
             </flux:select>
-            <flux:select wire:model.live="year" wire:change="changeDate" class="w-fit!">
-                @foreach (range(date('Y'), 2025, -1) as $item)
-                    <flux:select.option value="{{ $item }}">{{ $item }}</flux:select.option>
-                @endforeach
-            </flux:select>
-            <div class="">Summary</div>
+            <flux:button variant="primary" as href="{{ route('transaction.create') }}">Tambah Transaksi</flux:button>
+            <flux:button variant="primary" onclick="window.print()">Print</flux:button>
         </form>
-
-        <div class="hidden font-semibold print:block">Data Transaksi pada {{ $months[$month] }} {{ $year }}</div>
-
-
-        {{-- <flux:button variant="primary" as href="{{ route('product.create') }}">Add Product </flux:button> --}}
-        {{-- <div class="overflow-x-auto mt-4 print:hidden">
-            <div class="grid gap-4 min-w-3xl grid-cols-5">
-                <div class="flex flex-col aspect-video bg-mine-200 rounded items-center gap-4 justify-center">
-                    <div class=" text-xl lg:text-3xl font-bold">
-                        IDR {{ number_format($transaction->sum('total_amount') / 1000, 0, ',', '.') }}K
-                    </div>
-                    <div class="lg:text-lg text-center ">Earnings</div>
-                </div>
-                <div class="flex flex-col aspect-video bg-mine-200 rounded items-center gap-4 justify-center">
-                    <div class=" text-xl lg:text-3xl font-bold">
-                        IDR {{ number_format($transaction->sum('komisi') / 1000, 0, ',', '.') }}K
-                    </div>
-                    <div class="lg:text-lg text-center ">Commission Given</div>
-                </div>
-                <div class="flex flex-col aspect-video bg-mine-200 rounded items-center gap-4 justify-center">
-                    <div class=" text-xl lg:text-3xl font-bold">{{ $transaction->count() }}</div>
-                    <div class="lg:text-lg text-center ">Transaction Count</div>
-                </div>
-                <div class="flex flex-col aspect-video bg-mine-200 rounded items-center gap-4 justify-center">
-                    <div class=" text-xl lg:text-3xl font-bold">{{ $transaction->where('komisi', '>', 0)->count() }}
-                    </div>
-                    <div class="lg:text-lg text-center ">Transaction with Commission Count</div>
-                </div>
-                <div class="flex flex-col aspect-video bg-mine-200 rounded items-center gap-4 justify-center">
-                    <div class=" text-xl lg:text-3xl font-bold">{{ $transaction->sum('total_item') }} Pcs</div>
-                    <div class="lg:text-lg text-center ">Product Sold</div>
-                </div>
-            </div>
-        </div> --}}
 
         <div class="mt-4 print:hidden gap-4 flex">
             @if (Auth::user()->role == 'staff')
-            <flux:button variant="primary" as href="{{ route('transaction.create') }}">Tambah Transaksi</flux:button>
             @endif
-            <flux:button variant="primary" onclick="window.print()">Print</flux:button>
+
         </div>
         <div class="overflow-x-auto print:overflow-x-hidden mt-4 " x-transition:enter="transition ease-out duration-300"
             x-transition:enter-start="opacity-0 scale-90" x-transition:enter-end="opacity-100 scale-100"
             x-transition:leave="transition ease-in duration-300" x-transition:leave-start="opacity-100 scale-100"
             x-transition:leave-end="opacity-0 scale-90" class="">
             <div class="flex py-4 gap-4 print:min-w-0 print:text-2xs min-w-5xl">
-                <div class="w-10 text-center">#</div>
-                <div class="w-1/6">Nomor Transaksi</div>
-                <div class="w-1/6">Produk Terjual</div>
-                <div class="w-1/6 text-center">Total</div>
-                <div class="w-1/6 text-center">Komisi</div>
-                <div class="w-1/6 text-center">Status Komisi</div>
-                <div class="w-1/6 text-center print:hidden">Action</div>
+                <div class="uppercase font-semibold text-sm w-32 ">id_transaksi</div>
+                <div class="uppercase font-semibold text-sm w-1/6">Nomor_Transaksi</div>
+                <div class="uppercase font-semibold text-sm w-1/6">Tanggal</div>
+                <div class="uppercase font-semibold text-sm w-1/6 ">stiker_id</div>
+                <div class="uppercase font-semibold text-sm w-1/6 ">status</div>
+                <div class="uppercase font-semibold text-sm w-1/6 ">total_harga</div>
+                <div class="uppercase font-semibold text-sm w-1/6  print:hidden">aksi</div>
             </div>
             @foreach ($transaction as $key => $item)
                 <div class="flex gap-4 items-center py-2 print:min-w-0 print:text-2xs min-w-5xl">
-                    <div class="w-10 text-center">{{ $loop->iteration }} </div>
+                    <div class="w-32 ">{{ $item->id_transaksi }} </div>
                     <div class="w-1/6">{{ $item->nomor_transaksi }} </div>
                     <div class="w-1/6">
-                        @foreach ($item->transactionDetail as $itm)
-                            <div class="text-nowrap print:text-wrap">{{ $itm->product->nama }} | {{ $itm->jumlah }} Pcs </div>
-                        @endforeach
+                        {{ \Carbon\Carbon::parse($item->created_at)->format('Y-m-d H:i') }}
                     </div>
-                    <div class="w-1/6 text-center">IDR {{ number_format($item->total_harga, 0, ',', '.') }} </div>
+                    <div class="w-1/6 ">{{ $item->stiker_id }}</div>
 
-                    <div class="w-1/6 text-center">
-                        @if ($item->komisi)
-                            {{-- <div class="">{{ $item->commision }} </div> --}}
-                            <div class="">IDR {{ number_format($item->komisi->komisi, 0, ',', '.') }} </div>
-                            <div class="text-xs md:text-sm">{{ $item->stiker->driver->user->name }} </div>
-                        @else
-                            <div class="text-center">-</div>
-                        @endif
+                    <div class="w-1/6 ">
+                        {{ $item->status }}
                     </div>
-                    <div class="w-1/6 text-center">
-                        @if (!$item->komisi)
-                            <div class="">Tidak Memiliki Komisi</div>
-                        @else
-                            @if ($item->komisi->pembayaran)
-                                <div class="">Sudah Dicairkan</div>
-                            @else
-                                <div class="">Belum Dicairkan</div>
-                            @endif
-                        @endif
+                    <div class="w-1/6 ">
+                        IDR {{ number_format($item->total_harga, 0, ',', '.') }}
                     </div>
-                    <div class="w-1/6 flex items-center print:hidden">
-                        @if ($item->komisi)
-                            @if ($item->komisi->pembayaran)
-                                <flux:tooltip content="Lihat Bukti Pencairan">
-                                    <flux:modal.trigger name="bukti-{{ $key }}" >
-                                        <flux:button variant="primary" icon="eye"></flux:button>
-                                    </flux:modal.trigger>
-                                </flux:tooltip>
-                                <flux:modal name="bukti-{{ $key }}">
-                                    {{-- <div class="">asfdadsfasdfsadfasd</div> --}}
-                                    <img class="" src="{{ asset('storage/' . $item->komisi->pembayaran->bukti_pembayaran) }}" alt="">
-                                </flux:modal>
-                            @else
-                                <flux:tooltip content="Cairkan Komisi">
-                                    <flux:button as href="{{ route('transaction.withdrawal', ['slug'=>$item->slug]) }}" variant="primary" icon="banknotes"></flux:button>
-                                </flux:tooltip>
-                            @endif
-                        @endif
+                    <div class="w-1/6 flex print:hidden">
+                        <flux:tooltip content="Lihat Detail">
+                            <div class=" cursor-pointer w-full" wire:click='detailTransaksi({{ $item->id_transaksi }})'>
+                                Detail</div>
+                        </flux:tooltip>
                     </div>
                 </div>
             @endforeach
+            <flux:modal name="detail">
+                <div class="p-4">
+                    <div class="text-lg font-semibold mb-4">Detail Transaksi</div>
+                    @if ($transaksi)
+                        <div class="mb-2"><strong>ID Transaksi:</strong> {{ $transaksi->id_transaksi }}</div>
+                        <div class="mb-2"><strong>Nomor Transaksi:</strong> {{ $transaksi->nomor_transaksi }}</div>
+                        <div class="mb-2"><strong>Tanggal:</strong>
+                            {{ \Carbon\Carbon::parse($transaksi->created_at)->format('Y-m-d H:i') }}</div>
+                        <div class="mb-2"><strong>Stiker ID:</strong> {{ $transaksi->stiker_id }}</div>
+                        <div class="mb-2 border-b border-gray-300"><strong>Status:</strong> {{ $transaksi->status }}</div>
+
+                        <div class="">
+                            @foreach ($transaksi->transactionDetail as $item)
+                                <div class="mb-2 border-b border-gray-300 pb-2">
+                                    <div><strong>Produk:</strong> {{ $item->product->nama }}</div>
+                                    <div><strong>Jumlah:</strong> {{ $item->jumlah }}</div>
+                                    <div><strong>Harga Satuan:</strong> IDR
+                                        {{ number_format($item->harga, 0, ',', '.') }}</div>
+                                    <div><strong>Subtotal:</strong> IDR
+                                        {{ number_format($item->harga * $item->jumlah, 0, ',', '.') }}</div>
+                                </div>
+                            @endforeach
+                        </div>
+
+                        <div class="mb-2"><strong>Total Harga:</strong> IDR
+                            {{ number_format($transaksi->total_harga, 0, ',', '.') }}</div>
+                        <!-- Tambahkan detail lainnya sesuai kebutuhan -->
+                    @else
+                        <div>Memuat detail transaksi...</div>
+                    @endif
+                </div>
+            </flux:modal>
         </div>
     </div>
 </div>

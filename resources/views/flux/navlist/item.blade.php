@@ -22,15 +22,14 @@ $square ??= $slot->isEmpty();
 $iconClasses = Flux::classes($square ? 'size-5!' : 'size-4!');
 
 $classes = Flux::classes()
-    ->add('h-10 lg:h-10 relative flex items-center gap-3 rounded-lg')
+    ->add('h-12 lg:h-10 relative flex items-center gap-3 rounded-lg')
     ->add($square ? 'px-2.5!' : '')
-    ->add('py-4 text-start w-full px-3 my-px')
-    ->add('text-zinc-500 dark:text-white/80')
+    ->add('py- text-start w-full px-3 my-px')
     ->add(match ($variant) {
         'outline' => match ($accent) {
             true => [
                 'data-current:text-(--color-accent-content) hover:data-current:text-(--color-accent-content)',
-                'data-current:bg-greed-500 dark:data-current:bg-white/[7%] data-current:border data-current:border-zinc-200 dark:data-current:border-transparent',
+                'data-current:bg-white dark:data-current:bg-white/[7%] data-current:border data-current:border-zinc-200 dark:data-current:border-transparent',
                 'hover:text-zinc-800 dark:hover:text-white dark:hover:bg-white/[7%] hover:bg-zinc-800/5 ',
                 'border border-transparent',
             ],
@@ -42,14 +41,14 @@ $classes = Flux::classes()
         },
         default => match ($accent) {
             true => [
-                'data-current:text-(--color-accent-content) hover:data-current:text-(--color-accent-content)',
-                'data-current:bg-mine-200 dark:data-current:bg-white/[7%]',
-                'hover:text-zinc-800 dark:hover:text-white hover:bg-zinc-800/[4%] dark:hover:bg-white/[7%]',
+                'data-current:text-white text-black hover:data-current:text-white',
+                'data-current:bg-black dark:data-current:bg-white',
+                'hover:text-white dark:hover:text-white hover:bg-black dark:hover:bg-white/[7%]',
             ],
             false => [
                 'data-current:text-zinc-800 dark:data-current:text-zinc-100',
                 'data-current:bg-zinc-800/[4%] dark:data-current:bg-white/10',
-                'hover:text-zinc-800 dark:hover:text-white hover:bg-zinc-800/[4%] dark:hover:bg-white/10',
+                'hover:text-white dark:hover:text-white hover:bg-black dark:hover:bg-white/10',
             ],
         },
     })

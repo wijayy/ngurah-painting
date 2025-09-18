@@ -11,7 +11,7 @@ class Scan extends Component
 {
     public function mount($id)
     {
-         $sticker = request()->sticker_number;
+        $sticker = request()->sticker_number;
         $amount = request()->amount;
         $token = request()->token;
 

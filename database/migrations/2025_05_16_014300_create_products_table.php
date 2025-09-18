@@ -16,7 +16,8 @@ return new class extends Migration
             $table->string('nama');
             $table->string('slug')->unique();
             $table->string('harga');
-            $table->softDeletes();
+            $table->integer('persentase_komisi')->default(50);
+            $table->boolean('status')->default(true);
             $table->timestamps();
         });
     }

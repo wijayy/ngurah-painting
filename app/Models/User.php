@@ -5,6 +5,7 @@ namespace App\Models;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 
 use Cviebrock\EloquentSluggable\Sluggable;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -40,8 +41,9 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
-        'phone',
-        'role'
+        'nomor_telepon',
+        'role',
+        'catatan'
     ];
 
     /**
@@ -83,5 +85,15 @@ class User extends Authenticatable
             ->explode(' ')
             ->map(fn(string $name) => Str::of($name)->substr(0, 1))
             ->implode('');
+    }
+
+
+    public function scopeFilters(Builder $query, array $filters)
+    {
+        $query->when($filters["search"] ?? false, function ($query, $search) {
+            return $query->where("name", 'like', "%$search%")->orWhereHas("driver", function ($query) use ($search) {
+                $query->where('membership_no', 'like', "%$search%")->orWhere('no_ktp', 'like', "%$search%");
+            });
+        });
     }
 }

@@ -1,4 +1,4 @@
-<div class="w-full print:hidden mb-4 bg-white dark:bg-neutral-700 rounded p-4">
+<div class="w-full print:hidden mb-4 px-4">
     <div class="font-semibold">{{ $slot ?? '' }} </div>
     @if (session()->has('success'))
     <div class="text-mine-200">{{ session('success') }} </div>

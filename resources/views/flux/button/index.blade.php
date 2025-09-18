@@ -50,7 +50,7 @@ if ($loading && $type !== 'submit' && ! $isJsMethod) {
 }
 
 $classes = Flux::classes()
-    ->add('relative items-center font-medium justify-center gap-2 cursor-pointer whitespace-nowrap')
+    ->add('relative items-center font-medium justify-center gap-2 whitespace-nowrap')
     ->add('disabled:opacity-75 dark:disabled:opacity-75 disabled:cursor-default disabled:pointer-events-none')
     ->add(match ($size) { // Size...
         'base' => 'h-10 text-sm rounded-lg' . ' ' . ($square ? 'w-10' : 'px-4'),
@@ -78,7 +78,7 @@ $classes = Flux::classes()
         'subtle' => 'bg-transparent hover:bg-zinc-800/5 dark:hover:bg-white/15',
     })
     ->add(match ($variant) { // Text color...
-        'primary' => 'text-white',
+        'primary' => 'text-[var(--color-accent-foreground)]',
         'filled' => 'text-zinc-800 dark:text-white',
         'outline' => 'text-zinc-800 dark:text-white',
         'danger' => 'text-white',
@@ -87,7 +87,7 @@ $classes = Flux::classes()
     })
     ->add(match ($variant) { // Border color...
         'primary' => 'border border-black/10 dark:border-0',
-        'outline' => 'border border-zinc-200 hover:border-zinc-200 border-b-zinc-300/80 dark:border-zinc-600 dark:hover:border-zinc-600',
+        'outline' => 'border border-black dark:border-white',
          default => '',
     })
     ->add(match ($variant) { // Shadows...

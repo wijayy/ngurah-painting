@@ -3,6 +3,7 @@
 namespace App\Livewire\Product;
 
 use App\Models\Product;
+use Livewire\Attributes\Url;
 use Livewire\Component;
 use Livewire\WithPagination;
 
@@ -11,9 +12,18 @@ class Index extends Component
     use WithPagination;
     public $product;
 
+    #[Url(except: '')]
+    public $search;
+
     public function mount()
     {
-        $this->product = Product::latest()->get();
+        $this->updatedSearch();
+    }
+
+    public function updatedSearch()
+    {
+        $this->product = Product::latest()->filters(['search' => $this->search])->get();
+        $this->resetPage();
     }
 
     public function delete(Product $product)

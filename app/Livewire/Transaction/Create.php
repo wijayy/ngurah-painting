@@ -8,72 +8,103 @@ use App\Models\Product;
 use App\Models\Setting;
 use App\Models\Transaction;
 use App\Models\TransactionDetail;
-use Exception;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Livewire\Attributes\Validate;
 use Livewire\Component;
+
+use function PHPUnit\Framework\isNumeric;
 
 class Create extends Component
 {
-    public $region_id = 1, $allRegion, $allProduct, $name, $email, $phone, $payment = 'cash', $sticker, $note, $commission = 0, $driver, $attendance, $total = 0;
+    #[Validate('required|string')]
+    public $nomor_transaksi = '',  $status = 'selesai', $tanggal = '';
 
+    #[Validate('nullable|numeric')]
+    public $stiker = '';
+    public $name = '';
     public $products = [
-        ['name' => 1, 'qty' => 1, 'max' => 10],
+        ['name' => 1, 'jumlah' => 1, 'max' => 10],
     ];
 
-    public function addProduct()
+    public $attendance, $driver, $total = 0, $commission = 0, $payment = 'cash', $title = 'Tambah Transaksi', $allProduct;
+
+    public function rules()
     {
-        $this->products[] = ['name' => 1, 'qty' => 1, 'max' => 10];
-        $this->updatePrice();
+        return [
+            'products' => 'required|array',
+            'products.*.produk_id' => 'required|numeric',
+            'products.*.jumlah' => 'required|numeric|min:1',
+            'products.*.harga' => 'required|integer',
+        ];
     }
 
-    public function removeProduct($index)
+    public function addProdukItem()
+    {
+        $this->products[] = ['produk_id' => null, 'harga' => null, 'jumlah' => 1];
+    }
+    public function removeProdukItem($index)
     {
         unset($this->products[$index]);
-        $this->products = array_values($this->products); // reindex
+        $this->products = array_values($this->products);
     }
 
-    public function changeSticker()
+    public function changeStiker()
     {
         try {
-            $this->attendance = Attendance::whereDate('created_at', date('Y-m-d'))->where('nomor_stiker', $this->sticker)->first();
-            // dd($attendance);
+            $this->attendance = Attendance::whereDate('created_at', date('Y-m-d'))->where('nomor_stiker', $this->stiker)->first();
+            // dd($this->attendance);
             $this->driver = $this->attendance->driver;
+            // dd($this->driver);
+
         } catch (\Throwable $th) {
             $this->driver = null;
+            // return $th;
         }
 
         if ($this->driver) {
             $this->commission = $this->total * Setting::where('key', 'rasio_komisi')->value('value') / 100;
         }
-    }
-
-    public function updatePrice()
-    {
-        // dd($this->products);
-        $this->total = 0;
-        foreach ($this->products as $key => $item) {
-            $product = Product::find($item['name']);
-            // dd($product, $item['max']);
-            if (!$item['qty']) {
-                $item['qty'] = 0;
-            }
-            $this->total += $product->harga * $item['qty'];
-        }
-
-        if ($this->driver) {
-            $this->commission = $this->total * Setting::where('key', 'rasio_komisi')->value('value') / 100;
-        }
-
-        $this->render();
     }
 
     public function mount()
     {
-        $this->allProduct = Product::get();
+        $this->allProduct = Product::where('status', true)->get();
+        $this->nomor_transaksi = Transaction::transactionNumberGenerator();
+        $this->tanggal = date('Y-m-d\TH:i');
+        // $this->updatePrice();
+        $this->products = [
+            ['produk_id' => null, 'harga' => null, 'jumlah' => 1],
+        ];
 
-        $this->updatePrice();
+    }
+
+
+    public function produkChanged($index)
+    {
+
+
+        $produk_id = $this->products[$index]['produk_id'];
+        $produk = \App\Models\Product::find($produk_id);
+        $this->products[$index]['harga'] = $produk ? $produk->harga : null;
+
+        // dd($this->products,$produk_id, $produk);
+
+        $this->countTotal();
+    }
+
+    public function countTotal()
+    {
+
+        $total = 0;
+        foreach ($this->products as $item) {
+            if (is_numeric($item['harga']) && is_numeric($item['jumlah'])) {
+                $total += $item['harga'] * $item['jumlah'];
+            } else {
+                return;
+            }
+        }
+        $this->total = $total;
     }
 
     public function save(Request $request)
@@ -85,28 +116,23 @@ class Create extends Component
                 'metode_pembayaran' => $this->payment,
                 'stiker_id' => $this->attendance?->id_stiker,
                 'total_harga' => $this->total,
-                'tanggal' => now(),
+                'tanggal' => $this->tanggal,
             ]);
 
             // dd($transaction);
             foreach ($this->products as $key => $item) {
-                $product = Product::findOrFail($item['name']);
+                $product = Product::findOrFail($item['produk_id']);
                 TransactionDetail::create([
                     'transaksi_id' => $transaction->id_transaksi,
-                    'produk_id' => $item['name'],
-                    'jumlah' => $item['qty'],
-                    'harga' => $product->harga,
+                    'produk_id' => $item['produk_id'],
+                    'jumlah' => $item['jumlah'],
+                    'harga' => $item['harga'],
                 ]);
             }
 
-            if ($this->attendance ?? false) {
-                Komisi::create(['transaksi_id' => $transaction->id_transaksi, 'driver_id' => $this->driver->id_driver, 'komisi' => $this->commission]);
-            }
-
             DB::commit();
-            $total = $this->total / 1000;
-            $session = ($this->driver) ? "Boom! {$this->driver->user->name} delivered IDR {$total}K to your cashbox" : "Cha-ching! IDR {$total}K just landed in your cashbox";
-            return redirect(route('transaction.withdrawal'))->with('success', $session);
+            $session = 'data transaksi telah tersimpan.';
+            return redirect(route('transaction.index'))->with('success', $session);
         } catch (\Throwable $th) {
             DB::rollBack();
             if (config('app.debug') == true) {
@@ -118,6 +144,6 @@ class Create extends Component
     }
     public function render()
     {
-        return view('livewire.transaction.create');
+        return view('livewire.transaction.create')->layout('components.layouts.app', ['title' => $this->title]);
     }
 }

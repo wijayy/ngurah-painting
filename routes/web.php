@@ -2,13 +2,21 @@
 
 use App\Http\Controllers\AttendanceController;
 use App\Livewire\Attendance\Create as AttendanceCreate;
+
 use App\Livewire\User\Create as UserCreate;
 use App\Livewire\User\Index as UserIndex;
+use App\Livewire\Stiker\Create as StikerCreate;
+use App\Livewire\Stiker\Index as StikerIndex;
+use App\Livewire\Stiker\Kunjungan as StikerKunjungan;
 use App\Livewire\Attendance\Index as AttendanceIndex;
 use App\Livewire\Attendance\Token as AttendanceToken;
 use App\Livewire\Config;
 use App\Livewire\Driver\Index as DriverIndex;
 use App\Livewire\Driver\Create as DriverCreate;
+use App\Livewire\Pembayaran\Index as PembayaranIndex;
+use App\Livewire\Pembayaran\Create as PembayaranCreate;
+use App\Livewire\Komisi\Index as KomisiIndex;
+use App\Livewire\Komisi\Create as KomisiCreate;
 use App\Livewire\Driver\Show as DriverShow;
 use App\Livewire\Product\Index as ProductIndex;
 use App\Livewire\Product\Create as ProductCreate;
@@ -47,29 +55,42 @@ Route::middleware(['auth', 'verify', 'user'])->group(function () {
 
 require __DIR__ . '/auth.php';
 
-Route::middleware(['auth', 'verify', 'staff'])->group(function () {
+Route::middleware(['auth', 'verify', 'admin'])->group(function () {
     Route::get('catat_kunjungan', AttendanceCreate::class)->name('attendance.create');
     Route::get('tambah-transaksi/', TransactionCreate::class)->name('transaction.create');
     Route::get('transaksi/{slug}/cairkan-komisi', TransactionWithdrawal::class)->name('transaction.withdrawal');
     Route::get('scan', [AttendanceController::class, 'index'])->name('attendance.scan');
+
+    Route::get('scan-kunjungan', StikerKunjungan::class)->name('kunjungan');
+    Route::get('tambah-kunjungan', StikerCreate::class)->name('stiker.create');
+    Route::get('kunjungan', StikerIndex::class)->name('stiker.index');
 });
 
 Route::middleware(['auth', 'verify', 'admin'])->group(function () {
     Route::get('staff/', action: UserIndex::class)->name('user.index');
-    Route::get('add-staff/', UserCreate::class)->name('user.create');
+    Route::get('tambah-staff/', UserCreate::class)->name('user.create');
+    Route::get('edit-staff/{slug}', UserCreate::class)->name('user.edit');
 
     Route::get('business-configuration', Config::class)->name('config');
 
     Route::get('produk', ProductIndex::class)->name('product.index');
-    Route::get('add-produk', ProductCreate::class)->name('product.create');
+    Route::get('tambah-produk', ProductCreate::class)->name('product.create');
     Route::get('edit-produk/{slug}', ProductCreate::class)->name('product.edit');
+
+    Route::get('komisi', KomisiIndex::class)->name('komisi.index');
+    Route::get('tambah-komisi', KomisiCreate::class)->name('komisi.create');
+    Route::get('edit-komisi/{slug}', KomisiCreate::class)->name('komisi.edit');
+
+    Route::get('pembayaran', PembayaranIndex::class)->name('pembayaran.index');
+    Route::get('tambah-pembayaran', PembayaranCreate::class)->name('pembayaran.create');
+    Route::get('edit-pembayaran/{slug}', PembayaranCreate::class)->name('pembayaran.edit');
 
     Route::get('driver', DriverIndex::class)->name('driver.index');
     Route::get('tambah-driver', DriverCreate::class)->name('driver.create');
     Route::get('detail-driver/{slug}', DriverShow::class)->name('driver.show');
+    Route::get('edit-driver/{slug}', DriverCreate::class)->name('driver.edit');
 
     Route::get('kunjungan/{token}', AttendanceToken::class)->name('attendance.token');
-
 
     Route::get('tukar-poin/', WithdrawalIndex::class)->name('withdrawal.index');
     Route::get('terima-tukar-poin/{token}', WithdrawalAccepted::class)->name('withdrawal.token');

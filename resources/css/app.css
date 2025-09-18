@@ -26,14 +26,14 @@
     --color-zinc-950: #0a0a0a;
 
     --color-mine-100: #f7f7f7;
-    --color-mine-200: #ffb22c;
-    --color-mine-300: #854836;
+    --color-mine-200: #000;
+    --color-mine-300: #000;
 
     --text-2xs: 0.625rem;
 
     --color-accent: var(--color-neutral-800);
-    --color-accent-content: var(--color-neutral-800);
-    --color-accent-foreground: var(--color-mine-200);
+    --color-accent-content: var(--color-white);
+    --color-accent-foreground: var(--color-white);
 }
 
 @layer theme {

@@ -16,7 +16,9 @@ return new class extends Migration {
             $table->id('id_komisi');
             $table->foreignIdFor(Transaction::class, 'transaksi_id');
             $table->foreignIdFor(Driver::class, 'driver_id');
-            $table->integer('komisi');
+            $table->integer('nilai');
+            $table->integer('persen');
+            $table->string('status');
             $table->timestamps();
         });
     }

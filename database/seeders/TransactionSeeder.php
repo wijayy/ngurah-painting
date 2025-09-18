@@ -31,7 +31,9 @@ class TransactionSeeder extends Seeder
             Komisi::create([
                 'transaksi_id' => $transaction->id_transaksi,
                 'driver_id' => $transaction->stiker->driver->id_driver,
-                'komisi' => $transaction->total_harga / 2,
+                'nilai' => $transaction->total_harga / 2,
+                'persen' => 50,
+                'status' => 'pending',
             ]);
         }
         foreach (range(1, 50) as $key => $item) {

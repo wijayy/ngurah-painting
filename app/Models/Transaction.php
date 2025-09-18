@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Carbon\Carbon;
 use Cviebrock\EloquentSluggable\Sluggable;
+use Illuminate\Database\Eloquent\Builder;
+// use Illuminate\Contracts\Database\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -49,12 +51,11 @@ class Transaction extends Model
 
     public static function transactionNumberGenerator()
     {
-        $date = Carbon::now()->format('Ymd');
-        $prefix = 'TRX' . $date;
+        $date = Carbon::now()->format('Y');
+        $prefix = 'TRX-' . $date . '-';
 
         // Hitung jumlah transaksi yang sudah ada hari ini
-        $lastTransaction = self::whereDate('created_at', Carbon::today())
-            ->orderBy('id_transaksi', 'desc')
+        $lastTransaction = self::orderBy('id_transaksi', 'desc')
             ->first();
 
         $nextNumber = 1;
@@ -67,5 +68,25 @@ class Transaction extends Model
         $formattedNumber = str_pad($nextNumber, 4, '0', STR_PAD_LEFT);
 
         return $prefix . $formattedNumber;
+    }
+
+    public function scopeFilters(Builder $query, array $filters)
+    {
+        $query->when($filters['search'] ?? null, function ($query, $search) {
+            $query->where(function ($query) use ($search) {
+                $query->where('nomor_transaksi', 'like', '%' . $search . '%')
+                    ->orWhereHas('stiker', function (Builder $query) use ($search) {
+                        $query->where('nomor_stiker', 'like', '%' . $search . '%')
+                        ;
+                    });
+
+            });
+        });
+
+        $query->when($filters['status'] ?? null, function ($query, $status) {
+            if ($status !== '') {
+                $query->where('status', $status);
+            }
+        });
     }
 }

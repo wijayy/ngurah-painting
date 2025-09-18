@@ -5,8 +5,8 @@
 
 @php
     $classes = Flux::classes()
-        ->add('inline-flex items-center')
-        ->add('text-sm font-medium')
+        ->add('inline-flex uppercase font-semibold items-center')
+        ->add('text-xs font-medium')
         ->add('text-zinc-800 dark:text-white')
         ;
 @endphp

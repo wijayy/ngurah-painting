@@ -21,7 +21,8 @@ return new class extends Migration {
             $table->string('slug')->unique();
             $table->enum('metode_pembayaran', ['cash', 'transfer']);
             $table->integer('total_harga');
-            $table->date('tanggal');
+            $table->datetime('tanggal');
+            $table->string('status')->default('selesai');
             $table->timestamps();
         });
     }

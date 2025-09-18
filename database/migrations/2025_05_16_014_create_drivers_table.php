@@ -5,8 +5,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class extends Migration {
     /**
      * Run the migrations.
      */
@@ -15,14 +14,19 @@ return new class extends Migration
         Schema::create('drivers', function (Blueprint $table) {
             $table->id('id_driver');
             $table->foreignIdFor(User::class);
+            $table->string('membership_no');
             $table->string('bank')->nullable();
             $table->string('nama_rekening')->nullable();
             $table->string('nomor_rekening')->nullable();
             $table->string('token');
             $table->string('no_ktp');
+            $table->string('no_sim');
             $table->string('no_telepon');
-            $table->string('foto_ktp');
-            $table->boolean('status')->default(1);
+            $table->string('url_foto_ktp');
+            $table->string('url_foto_sim');
+            $table->string('alamat')->nullable();
+            $table->dateTime('sim_berlaku_hingga');
+            $table->string('status')->default("aktif");
             $table->integer('poin')->default(0);
             $table->softDeletes();
             $table->timestamps();
