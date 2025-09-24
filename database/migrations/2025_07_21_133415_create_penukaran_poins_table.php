@@ -16,10 +16,15 @@ return new class extends Migration {
             $table->foreignIdFor(Driver::class, 'driver_id');
             $table->integer('poin');
             $table->integer('jumlah');
-            $table->string('bukti_penukaran')->nullable();
+            $table->string('bukti_url')->nullable();
             $table->string('token');
             $table->enum('metode_penukaran', ['cash', 'transfer'])->nullable();
-            $table->enum('status', ['diajukan', 'ditolak', 'sukses'])->default('diajukan');
+            $table->string('bank')->nullable();
+            $table->string('nama_rekening')->nullable();
+            $table->string('nomor_rekening')->nullable();
+            $table->enum('status', ['diajukan', 'ditolak', 'disetujui'])->default('diajukan');
+            $table->timestamp('disetujui_at')->nullable();
+            $table->timestamp('ditolak_at')->nullable();
             $table->timestamps();
         });
     }

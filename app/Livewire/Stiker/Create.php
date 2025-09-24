@@ -67,6 +67,10 @@ class Create extends Component
             $stiker->used_at = $this->used_at;
             $stiker->jumlah_wisatawan = $this->jumlah;
             $stiker->save();
+
+            $this->driver->user->aktifitas()->create([
+                'aktifitas' => "Melakukan Kunjungan dengan Nomor Stiker $this->nomor_stiker dan Jumlah Wisatawan $this->jumlah",
+            ]);
             DB::commit();
         } catch (\Throwable $th) {
             DB::rollBack();

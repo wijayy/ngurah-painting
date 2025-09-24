@@ -24,7 +24,7 @@ return new class extends Migration {
             $table->string('no_telepon');
             $table->string('url_foto_ktp');
             $table->string('url_foto_sim');
-            $table->string('alamat')->nullable();
+            $table->string(column: 'alamat')->nullable();
             $table->dateTime('sim_berlaku_hingga');
             $table->string('status')->default("aktif");
             $table->integer('poin')->default(0);

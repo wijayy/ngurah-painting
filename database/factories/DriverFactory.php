@@ -32,6 +32,7 @@ class DriverFactory extends Factory
             'no_telepon' => fake()->phoneNumber(),
             'url_foto_ktp' => 'http://ngurah-painting-app.me',
             'url_foto_sim' => 'http://ngurah-painting-app.me',
+            'poin' => 40,
         ];
     }
 }

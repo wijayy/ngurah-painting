@@ -1,32 +1,19 @@
 <?php
 
-namespace App\Livewire;
+namespace App\Livewire\Staff;
 
-use App\Models\Attendance;
-use App\Models\Driver;
-use App\Models\Komisi;
-use App\Models\Pembayaran;
 use App\Models\Transaction;
-use App\Models\TransactionDetail;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Livewire\Component;
 
 class Dashboard extends Component
 {
-
-    public $title = 'Dashboard', $totalDriver, $totalTransaction, $totalKomisi, $labels = [], $totals = [];
+    public $title = "Dashboard";
+    public $labels, $totals;
 
     public function mount()
     {
-        $this->totalDriver = Driver::count();
-        $this->totalTransaction = Transaction::whereMonth('created_at', Carbon::now()->month)
-            ->whereYear('created_at', Carbon::now()->year)->count();
-        // Ambil total komisi bulan ini
-        $this->totalKomisi = Pembayaran::whereMonth('created_at', Carbon::now()->month)
-            ->whereYear('created_at', Carbon::now()->year)
-            ->sum('amount');
-
         $data = Transaction::select(
             DB::raw("DATE_FORMAT(created_at, '%Y-%m') as month"),
             DB::raw("SUM(total_harga) as total")
@@ -53,6 +40,6 @@ class Dashboard extends Component
 
     public function render()
     {
-        return view('livewire.dashboard')->layout('components.layouts.app', ['title' => 'Dashboard']);
+        return view('livewire.staff.dashboard')->layout('components.layouts.app', ['title' => $this->title]);
     }
 }

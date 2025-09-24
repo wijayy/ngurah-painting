@@ -14,6 +14,26 @@ class PenukaranPoin extends Model
     protected $guarded = ['id_penukaran'];
     protected $primaryKey = 'id_penukaran';
 
+    /**
+     * The attributes that should be cast.
+     *
+     * @var array
+     */
+    protected $casts = [
+        'disetujui_at' => 'datetime',
+        'ditolak_at' => 'datetime',
+    ];
+
+    /**
+     * Get the casts array for the model.
+     *
+     * @return array
+     */
+    public function casts()
+    {
+        return $this->casts;
+    }
+
     public function driver()
     {
         return $this->belongsTo(Driver::class, 'driver_id', 'id_driver');
@@ -26,4 +46,5 @@ class PenukaranPoin extends Model
             10
         )), 0, 10);
     }
+
 }

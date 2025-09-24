@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Komisi;
 
+use App\Models\Aktifitas;
 use App\Models\Komisi;
 use App\Models\Transaction;
 use Livewire\Attributes\Validate;
@@ -69,12 +70,21 @@ class Create extends Component
     {
         $validated = $this->validate();
 
-        $validated['driver_id'] = Transaction::where('id_transaksi', $this->transaksi_id)->first()->stiker->driver_id ?? null;
+        $driver = Transaction::where('id_transaksi', $this->transaksi_id)->first()->stiker->driver ?? null;
+
+        $validated['driver_id'] = $driver ? $driver->id_driver : null;
 
         Komisi::updateOrCreate(
             ['id_komisi' => $this->komisi ? $this->komisi->id_komisi : null],
             $validated
         );
+
+        if ($driver) {
+            $driver->user->aktifitas()->create([
+                'aktifitas' => $this->komisi ? "Mengubah komisi untuk transaksi ID $this->transaksi_id dengan nilai Rp. " . number_format($this->nilai, 0, ',', '.') : "Menambahkan komisi untuk transaksi ID $this->transaksi_id dengan nilai Rp. " . number_format($this->nilai, 0, ',', '.'),
+            ]);
+        }
+
         session()->flash('success', $this->komisi ? 'Komisi Berhasil Diubah' : 'Komisi Berhasil Ditambahkan');
         return redirect()->route('komisi.index');
     }

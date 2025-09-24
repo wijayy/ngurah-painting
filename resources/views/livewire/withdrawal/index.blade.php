@@ -1,85 +1,87 @@
+@php
+    $months = [
+        1 => 'Januari',
+        2 => 'Februari',
+        3 => 'Maret',
+        4 => 'April',
+        5 => 'Mei',
+        6 => 'Juni',
+        7 => 'Juli',
+        8 => 'Agustus',
+        9 => 'September',
+        10 => 'Oktober',
+        11 => 'November',
+        12 => 'Desember',
+    ];
+@endphp
+
 <div>
-    <flux:session>Driver Withdrawn Record</flux:session>
+    <flux:session>{{ $title }}</flux:session>
 
     <div class="rounded bg-white dark:bg-neutral-700 p-4">
         <div class="print:block hidden font-semibold">
             Data Penukaran Poin pada {{ $month }} {{ $year }}
         </div>
-        <div class="print:hidden">
+        <div class="print:hidden flex space-x-2 items-center w-fit">
+            {{-- <flux:input wire:model.live='month'></flux:input> --}}
+            <flux:select wire:model.live='month'>
+                <flux:select.option value="">-- Pilih Bulan --</flux:select.option>
+                @foreach ($months as $num => $name)
+                    <flux:select.option value="{{ $num }}">{{ $name }}</flux:select.option>
+                @endforeach
+            </flux:select>
+            <flux:input wire:model.live='year'></flux:input>
             <flux:button variant="primary" onclick="window.print()">Print</flux:button>
         </div>
         <div class="overflow-x-auto mt-4 print:overflow-x-hidden" x-transition:enter="transition ease-out duration-300"
             x-transition:enter-start="opacity-0 scale-90" x-transition:enter-end="opacity-100 scale-100"
             x-transition:leave="transition ease-in duration-300" x-transition:leave-start="opacity-100 scale-100"
             x-transition:leave-end="opacity-0 scale-90" class="">
-            <div class="flex gap-4 print:min-w-0 print:text-2xs min-w-5xl">
-                <div class="w-10 text-center">#</div>
-                <div class="w-1/6">Info Driver</div>
-                <div class="w-1/6 text-center">Poin</div>
-                <div class="w-1/6 text-center">Jumlah</div>
-                <div class="w-1/6 text-center">Metode Penukaran</div>
-                <div class="w-1/6 text-center">Waktu Penukaran</div>
-                <div class="w-1/6 text-center">Status</div>
-                <div class="w-1/6 text-center print:hidden">Action</div>
+            <div class="grid grid-cols-11 gap-4 print:min-w-0 print:text-2xs min-w-[1500px]">
+                <div class=" ">ID_PENUKARAN</div>
+                <div class="">DRIVER_ID</div>
+                <div class=" ">POIN DITUKAR</div>
+                <div class=" ">NOMINAL</div>
+                <div class="col-span-2 ">METODE_PENUKARAN</div>
+                <div class=" ">DIAJUKAN_AT</div>
+                <div class="col-span-2 ">DISETUJUI/DITOLAK_AT</div>
+                <div class=" ">STATUS</div>
+                <div class="  print:hidden">AKSI</div>
             </div>
             @foreach ($withdrawal as $key => $item)
-                <div class="flex gap-4 items-center print:min-w-0 print:text-2xs py-2 min-w-5xl">
-                    <div class="w-10 text-center">{{ $loop->iteration }} </div>
-                    <div class="w-1/6">
-                        <div class="">{{ $item->driver->user->name }} </div>
-                        <div class="text-xs md:text-sm text-wrap print:text-2xs">{{ $item->driver->user->email }} </div>
-                        <div class="text-xs md:text-sm print:text-2xs">{{ $item->driver->no_telepon }} </div>
+                <div class="grid grid-cols-11 gap-4 items-center print:min-w-0 print:text-2xs py-2 min-w-[1500px]">
+                    <div class=" ">{{ $item->id_penukaran }} </div>
+                    <div class="">
+                        {{ $item->driver_id }}
                     </div>
-                    <div class="w-1/6 text-center">{{ $item->poin }}</div>
-                    <div class="w-1/6 text-center">IDR {{ number_format($item->jumlah, 0, ',', '.') }} </div>
-                    <div class="w-1/6 text-center">
-                        @if ($item->withdrawal_method == 'cash')
+                    <div class=" ">{{ $item->poin }}</div>
+                    <div class=" ">IDR {{ number_format($item->jumlah, 0, ',', '.') }} </div>
+                    <div class=" col-span-2 ">
+                        @if ($item->metode_penukaran == 'cash')
                             Cash
                         @else
-                            <div class="">{{ $item->driver->nomor_rekening }} </div>
-                            <div class="text-xs md:text-sm print:text-2xs">{{ $item->driver->nama_rekening }} </div>
-                            <div class="text-xs md:text-sm print:text-2xs">{{ $item->driver->bank }} </div>
+                            <div class="">{{ $item->nomor_rekening }} </div>
+                            <div class="text-xs md:text-sm print:text-2xs">{{ $item->nama_rekening }} </div>
+                            <div class="text-xs md:text-sm print:text-2xs">{{ $item->bank }} </div>
                         @endif
                     </div>
-                    <div class="w-1/6 text-center">{{ $item->created_at->format('d/m/Y H:i') }} </div>
-                    <div class="w-1/6 text-center">{{ $item->status }} </div>
-                    <div class="w-1/6 flex justify-center print:hidden gap-2">
-                        @if (Auth::user()->role != 'driver' && $item->status == 'diajukan')
-                            <flux:modal.trigger name="decline-{{ $key }}">
-                                <flux:tooltip content="Tolak">
-                                    <flux:button icon="x-mark" iconVarian size="sm" square variant="danger">
-                                    </flux:button>
-                                </flux:tooltip>
-                            </flux:modal.trigger>
-                            <flux:tooltip content="Terima">
-                                <flux:button icon="check" href="{{ route('withdrawal.token', ['token' => $item->token]) }}"
-                                    iconVarian size="sm" square as variant="primary">
-                                </flux:button>
-                            </flux:tooltip>
-                            <flux:modal name="decline-{{ $key }}">
-                                <flux:heading size='lg' class="">Tolak Penukaran Poin</flux:heading>
-                                <div class="">Apakah anda yakin menolak Penukaran Poin {{ $item->driver->user->name }}? </div>
-                                <div class="flex justify-end w-full mt-4">
-                                    <flux:modal.close>
-                                        <flux:button wire:click='decline({{ $item }});' variant="danger">Tolak</flux:button>
-                                    </flux:modal.close>
-                                </div>
-                            </flux:modal>
+                    <div class=" ">{{ $item->created_at->format('d/m/Y H:i') }} </div>
+                    <div class=" col-span-2 ">
+                        @if ($item->status == 'disetujui' && $item->disetujui_at)
+                            {{ $item->disetujui_at->format('d/m/Y H:i') }}
+                        @elseif ($item->status == 'ditolak' && $item->ditolak_at)
+                            {{ $item->ditolak_at->format('d/m/Y H:i') }}
+                        @else
+                            -
                         @endif
-                        @if ($item->status == 'sukses')
-                            <flux:modal.trigger name="accepted-{{ $key }}">
-                                <flux:tooltip content="Bukti Penukaran">
-                                    <flux:button icon="eye" iconVarian size="sm" square as variant="primary">
-                                    </flux:button>
-                                </flux:tooltip>
-                            </flux:modal.trigger>
-                            <flux:modal name="accepted-{{ $key }}">
-                                <img src="{{ asset('storage/' . $item->bukti_penukaran) }}" alt="">
-                            </flux:modal>
+                    </div>
+                    <div class="capitalize">{{ $item->status }}</div>
+                    <div class="">
+                        @if ($item->status == 'diajukan')
+                            <a href="{{ route('withdrawal.token', ['token' => $item->token]) }}">Proses</a>
                         @endif
                     </div>
                 </div>
-
             @endforeach
         </div>
     </div>

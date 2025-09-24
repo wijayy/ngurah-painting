@@ -69,11 +69,16 @@ class User extends Authenticatable
         ];
     }
 
-    protected $with = ['driver'];
+    protected $with = ['driver', 'aktifitas'];
 
     public function driver()
     {
         return $this->hasOne(Driver::class, 'user_id', 'id');
+    }
+
+    public function aktifitas()
+    {
+        return $this->hasMany(Aktifitas::class, 'user_id', 'id')->latest();
     }
 
     /**
@@ -86,7 +91,6 @@ class User extends Authenticatable
             ->map(fn(string $name) => Str::of($name)->substr(0, 1))
             ->implode('');
     }
-
 
     public function scopeFilters(Builder $query, array $filters)
     {

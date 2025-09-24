@@ -15,13 +15,12 @@ return new class extends Migration
     {
         Schema::create('commision_withdrawals', function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(User::class)->nullable();
             $table->foreignIdFor(Driver::class);
-            $table->integer('amount');
+            $table->integer('poin');
             $table->string('image')->nullable();
             $table->string('token')->unique();
-            $table->enum('withdrawal_method', ['cash', 'transfer']);
-            $table->enum('status', ['requested', 'declined', 'accepted'])->default('requested');
+            $table->enum('metode_penukaran', ['cash', 'transfer']);
+            $table->enum('status', ['diajukan', 'ditolak', 'diterima'])->default(value: 'diajukan');
             $table->timestamps();
         });
     }

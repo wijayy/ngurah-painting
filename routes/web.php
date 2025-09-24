@@ -55,7 +55,7 @@ Route::middleware(['auth', 'verify', 'user'])->group(function () {
 
 require __DIR__ . '/auth.php';
 
-Route::middleware(['auth', 'verify', 'admin'])->group(function () {
+Route::middleware(['auth', 'verify', 'staff'])->group(function () {
     Route::get('catat_kunjungan', AttendanceCreate::class)->name('attendance.create');
     Route::get('tambah-transaksi/', TransactionCreate::class)->name('transaction.create');
     Route::get('transaksi/{slug}/cairkan-komisi', TransactionWithdrawal::class)->name('transaction.withdrawal');
@@ -93,7 +93,7 @@ Route::middleware(['auth', 'verify', 'admin'])->group(function () {
     Route::get('kunjungan/{token}', AttendanceToken::class)->name('attendance.token');
 
     Route::get('tukar-poin/', WithdrawalIndex::class)->name('withdrawal.index');
-    Route::get('terima-tukar-poin/{token}', WithdrawalAccepted::class)->name('withdrawal.token');
+    Route::get('proses-tukar-poin/{token}', WithdrawalAccepted::class)->name('withdrawal.token');
 });
 
 Route::middleware(['auth', 'verify', 'driver'])->group(function () {

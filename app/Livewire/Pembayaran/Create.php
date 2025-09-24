@@ -70,6 +70,10 @@ class Create extends Component
                 $validated
             );
 
+            $this->komisi->driver->user->aktifitas()->create([
+                'aktifitas' => $this->pembayaran ? "Mengubah data pembayaran untuk komisi ID $this->komisi_id dengan jumlah Rp. " . number_format($this->amount, 0, ',', '.') : "Pembayaran untuk komisi ID $this->komisi_id dengan jumlah Rp. " . number_format($this->amount, 0, ',', '.') . " telah dilakukan",
+            ]);
+
             DB::commit();
             session()->flash('message', 'Data pembayaran berhasil disimpan.');
             return redirect(route('komisi.index'));

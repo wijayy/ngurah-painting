@@ -1,7 +1,9 @@
-<x-layouts.app title="Dashboard">
+<x-layouts.app title="{{ Auth::user()->role == 'driver' ? 'Profil' : 'Dashboard' }}">
     @if (Auth::user()->role == 'driver')
-        <livewire:driver.show class=""></livewire:driver.show>
-    @else
+        <livewire:driver.profile class=""></livewire:driver.profile>
+    @elseif (Auth::user()->role == 'admin')
         <livewire:dashboard class=""></livewire:dashboard>
+    @elseif (Auth::user()->role == 'staff')
+        <livewire:staff.dashboard class=""></livewire:staff.dashboard>
     @endif
 </x-layouts.app>

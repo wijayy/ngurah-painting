@@ -18,7 +18,7 @@ use function PHPUnit\Framework\isNumeric;
 class Create extends Component
 {
     #[Validate('required|string')]
-    public $nomor_transaksi = '',  $status = 'selesai', $tanggal = '';
+    public $nomor_transaksi = '', $status = 'selesai', $tanggal = '';
 
     #[Validate('nullable|numeric')]
     public $stiker = '';
@@ -127,6 +127,12 @@ class Create extends Component
                     'produk_id' => $item['produk_id'],
                     'jumlah' => $item['jumlah'],
                     'harga' => $item['harga'],
+                ]);
+            }
+
+            if ($this->driver) {
+                $this->driver->user->aktifitas()->create([
+                    'aktifitas' => "Customer berhasil melakukan transaksi dengan nomor transaksi $transaction->nomor_transaksi dan total harga Rp. " . number_format($this->total, 0, ',', '.')
                 ]);
             }
 

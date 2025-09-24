@@ -16,7 +16,7 @@ class DriverSeeder extends Seeder
     {
         foreach (range(1, 20) as $key => $item) {
             $name = fake()->name();
-            $user = User::factory()->create(['email' => "driver$item@gmail.com", 'role'=>'driver', 'name'=>$name]);
+            $user = User::factory()->create(['email' => "driver$item@admin.com", 'role'=>'driver', 'name'=>$name]);
             Driver::factory(1)->recycle($user)->create(['nama_rekening'=>$name]);
         }
     }
