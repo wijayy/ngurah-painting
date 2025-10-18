@@ -15,7 +15,7 @@ use Illuminate\Validation\Rule;
 
 class Create extends Component
 {
-    public $password_confirmation = '', $driver, $title;
+    public $password_confirmation = '', $driver, $title, $email, $nomor_telepon;
 
     #[Validate(rule: 'required|string', as: 'nama')]
     public $name = '';
