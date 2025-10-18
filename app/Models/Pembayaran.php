@@ -10,11 +10,21 @@ class Pembayaran extends Model
     /** @use HasFactory<\Database\Factories\PembayaranFactory> */
     use HasFactory;
 
-        protected $table = 'pembayaran';
-        protected $guarded = ['id_pembayaran'];
-        protected $primaryKey = 'id_pembayaran';
+    protected $table = 'pembayaran';
+    protected $guarded = ['id_pembayaran'];
+    protected $primaryKey = 'id_pembayaran';
 
-        public function komisi() {
-            return $this->belongsTo(Komisi::class, 'komisi_id', 'id_komisi');
-        }
+    /**
+     * The attributes that should be cast.
+     *
+     * @var array
+     */
+    protected $casts = ['waktu_pembayaran' => 'datetime'];
+
+    public function komisi()
+    {
+        return $this->belongsTo(Komisi::class, 'komisi_id', 'id_komisi');
+    }
+
+
 }

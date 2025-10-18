@@ -51,15 +51,21 @@
 </div>
 <script src="https://unpkg.com/html5-qrcode"></script>
 <script>
-    function onScanSuccess(decodedText, decodedResult) {
-        console.log(`Code matched = ${decodedText}`, decodedResult);
-        @this.set('token', decodedText);
+    function initializeScanner() {
+        function onScanSuccess(decodedText, decodedResult) {
+            console.log(`Code matched = ${decodedText}`, decodedResult);
+            @this.set('token', decodedText);
+        }
 
+        let html5QrcodeScanner = new Html5QrcodeScanner(
+            "reader", {
+                fps: 10,
+                qrbox: 250 // Adjusted size for better performance on mobile
+            });
+        html5QrcodeScanner.render(onScanSuccess);
     }
-    let html5QrcodeScanner = new Html5QrcodeScanner(
-        "reader", {
-            fps: 10,
-            qrbox: 800
-        });
-    html5QrcodeScanner.render(onScanSuccess);
+
+    document.addEventListener('livewire:navigated', () => {
+        initializeScanner();
+    })
 </script>

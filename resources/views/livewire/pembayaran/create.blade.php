@@ -21,26 +21,32 @@
                     <option value="transfer">Transfer</option>
                 </flux:select>
             </div>
-            <div class="md:col-span-3">
-                <flux:input class="" wire:model.live='bukti_transfer_url' type="text"
-                    label="Bukti Transfer URL" required></flux:input>
-            </div>
             @if ($this->metode === 'transfer')
-                <div class="md:col-span-2">
+                <div class="md:col-span-3">
                     <flux:input class="" wire:model.live='bank' type="text" label="Bank"></flux:input>
                 </div>
-                <div class="md:col-span-2">
+                <div class="md:col-span-3">
                     <flux:input class="" wire:model.live='nama_rekening' type="text" label="Nama Rekening">
                     </flux:input>
                 </div>
-                <div class="md:col-span-2">
+                <div class="md:col-span-3">
                     <flux:input class="" wire:model.live='nomor_rekening' type="text" label="Nomor Rekening">
+                    </flux:input>
+                </div>
+
+                <div class="md:col-span-3">
+                    <flux:input class="" wire:model.live='waktu_pembayaran' type="datetime-local"
+                        label="Waktu Transfer">
                     </flux:input>
                 </div>
             @endif
             <div class="md:col-span-3">
                 <flux:input class="" wire:model.live='nomor_referensi' type="text" label="Nomor Referensi">
                 </flux:input>
+            </div>
+            <div class="md:col-span-3">
+                <flux:input class="" wire:model.live='bukti_transfer_url' type="text"
+                    label="Bukti Transfer URL" required></flux:input>
             </div>
             <div class="md:col-span-3">
                 <flux:select wire:model.live='status' label="Status" required>

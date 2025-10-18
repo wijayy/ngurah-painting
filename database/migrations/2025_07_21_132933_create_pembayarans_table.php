@@ -23,6 +23,7 @@ return new class extends Migration
             $table->string('nomor_rekening')->nullable();
             $table->string('nomor_referensi')->nullable();
             $table->string('catatan')->nullable();
+            $table->datetime('waktu_pembayaran')->nullable();
             $table->string('status')->default('pending');
             $table->timestamps();
         });

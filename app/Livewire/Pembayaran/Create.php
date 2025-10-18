@@ -22,6 +22,9 @@ class Create extends Component
     #[Validate('required|active_url')]
     public $bukti_transfer_url = '';
 
+    #[Validate('nullable')]
+    public $waktu_pembayaran = null;
+
     public function mount($slug = null)
     {
         if ($slug) {
@@ -36,6 +39,7 @@ class Create extends Component
             $this->nomor_referensi = $this->pembayaran->nomor_referensi;
             $this->catatan = $this->pembayaran->catatan;
             $this->status = $this->pembayaran->status;
+            $this->waktu_pembayaran = $this->pembayaran->waktu_pembayaran?->format('Y-m-d\TH:i');
             $this->title = "Edit Pembayaran {$this->pembayaran->id_pembayaran}";
         } else {
             $this->title = "Tambah Pembayaran";
@@ -48,7 +52,7 @@ class Create extends Component
         if ($this->komisi) {
             // Cek apakah komisi sudah punya pembayaran
             $sudahAdaPembayaran = \App\Models\Pembayaran::where('komisi_id', $this->komisi_id)->exists();
-            if ($sudahAdaPembayaran) {
+            if ($sudahAdaPembayaran && !$this->pembayaran) {
                 $this->addError('komisi_id', 'Komisi ini sudah memiliki pembayaran.');
                 $this->amount = 0;
                 return;
