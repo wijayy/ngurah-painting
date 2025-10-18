@@ -48,6 +48,12 @@ class Create extends Component
                         $this->nilai = 0;
                         return;
                     }
+
+                    if ($transaksi->stiker === null) {
+                        $this->addError('transaksi_id', 'Transaksi tidak memiliki driver terkait.');
+                        $this->nilai = 0;
+                        return;
+                    }
                 } else {
                     // Jika edit, transaksi_id tidak boleh diubah dari komisi yang sedang diedit
                     if ($this->transaksi_id != $this->komisi->transaksi_id) {
@@ -72,7 +78,12 @@ class Create extends Component
 
         $driver = Transaction::where('id_transaksi', $this->transaksi_id)->first()->stiker->driver ?? null;
 
-        $validated['driver_id'] = $driver ? $driver->id_driver : null;
+        if ($driver) {
+            $validated['driver_id'] = $driver->id_driver;
+        } else {
+            session()->flash('success', $this->komisi ? 'Komisi Berhasil Diubah' : 'Komisi Berhasil Ditambahkan');
+            return redirect()->route('komisi.index');
+        }
 
         Komisi::updateOrCreate(
             ['id_komisi' => $this->komisi ? $this->komisi->id_komisi : null],

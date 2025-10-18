@@ -5,6 +5,7 @@ namespace App\Livewire\User;
 use App\Models\User;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\Rule;
 use Livewire\Component;
 
 class Create extends Component
@@ -16,8 +17,9 @@ class Create extends Component
     {
         $rules = [
             'name' => 'required|string',
-            'email' => 'required|email',
-            'nomor_telepon' => 'required|string|starts_with:62',
+            // default unique rule for create; will be overridden if editing
+            'email' => ['required', 'email', Rule::unique('users', 'email')],
+            'nomor_telepon' => ['required', 'string', 'starts_with:62', Rule::unique('users', 'nomor_telepon')],
             'password' => 'required|string|confirmed',
             'role' => 'required|string',
             'status' => 'required|in:0,1',
@@ -27,6 +29,10 @@ class Create extends Component
         if ($this->user) {
             // If editing an existing user, password is optional
             $rules['password'] = 'nullable|string|confirmed';
+
+            // Exclude current user from unique checks when editing
+            $rules['email'] = ['required', 'email', Rule::unique('users', 'email')->ignore($this->user->id)];
+            $rules['nomor_telepon'] = ['required', 'string', 'starts_with:62', Rule::unique('users', 'nomor_telepon')->ignore($this->user->id)];
         }
 
         return $rules;

@@ -11,6 +11,7 @@ use Livewire\Attributes\Layout;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
 use Livewire\WithFileUploads;
+use Illuminate\Validation\Rule;
 
 class Create extends Component
 {
@@ -19,18 +20,20 @@ class Create extends Component
     #[Validate(rule: 'required|string', as: 'nama')]
     public $name = '';
 
-    #[Validate('required|email')]
-    public $email = '';
-
-    #[Validate('required|string|starts_with:62')]
-    public $nomor_telepon = '';
-
     public function rules()
     {
         return [
             'password' => $this->driver
                 ? 'string|nullable|confirmed'
                 : 'string|required|confirmed',
+
+            'email' => $this->driver
+                ? ['required', 'email', Rule::unique('users', 'email')->ignore($this->driver->id)]
+                : ['required', 'email', Rule::unique('users', 'email')],
+
+            'nomor_telepon' => $this->driver
+                ? ['required', 'string', 'starts_with:62', Rule::unique('users', 'nomor_telepon')->ignore($this->driver->id)]
+                : ['required', 'string', 'starts_with:62', Rule::unique('users', 'nomor_telepon')],
         ];
     }
     public $password = '';
