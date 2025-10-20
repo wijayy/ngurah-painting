@@ -81,7 +81,7 @@ class Create extends Component
             }
         }
         session()->flash('message', 'Stiker berhasil dibuat.');
-        return redirect()->route('attendance.index');
+        return redirect()->route('stiker.index');
     }
 
     public function render()

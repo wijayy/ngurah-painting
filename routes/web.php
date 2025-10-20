@@ -51,7 +51,7 @@ Route::middleware(['auth', 'verify'])->group(function () {
 
 Route::middleware(['auth', 'verify', 'user'])->group(function () {
 
-    Route::get('kunjungan', AttendanceIndex::class)->name('attendance.index');
+    Route::get('kunjungan', AttendanceIndex::class)->name('stiker.index');
     Route::get('transaksi/', TransactionIndex::class)->name('transaction.index');
 
 });
