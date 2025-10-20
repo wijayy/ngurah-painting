@@ -123,6 +123,7 @@ class Create extends Component
                 'url_foto_sim' => $this->url_foto_sim,
                 'sim_berlaku_hingga' => $this->sim_berlaku_hingga,
                 'membership_no' => $this->membership_no,
+                'nomor_telepon' => $this->nomor_telepon,
                 'token' => $this->token,
                 'alamat' => $this->alamat,
             ];

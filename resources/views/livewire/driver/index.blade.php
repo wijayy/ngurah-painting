@@ -29,7 +29,7 @@
                     <div class="col-span-2 text-center">
                         {{ number_format($item->driver->komisi->whereNull('pembayaran')->sum('komisi'), 0, ',', '.') }}
                     </div>
-                    <div class="col-span-2 text-center">{{ $item->email_verified_at->format('Y-m-d') }}</div>
+                    <div class="col-span-2 text-center">{{ $item->email_verified_at?->format('Y-m-d') ?? '-' }}</div>
                     <div class="col-span-2 text-center flex justify-center">
                         <a href="{{ route('driver.edit', ['slug' => $item->slug]) }}">Edit</a>
                     </div>
