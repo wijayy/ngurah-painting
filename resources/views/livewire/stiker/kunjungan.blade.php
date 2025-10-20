@@ -5,11 +5,11 @@
         <div class="rounded p-4 md:col-span-2 bg-white dark:bg-neutral-700">
             <div class="">
                 <div class="mb-4  font-semibold">Pemindaian QR Driver</div>
-                <div id="reader" class=" rounded-lg"></div>
+                <video id="reader" class=" rounded-lg"></video>
                 <div class="mt-4 flex gap-4">
                     <flux:input wire:model.live='token' placeholder="Tempelkan token_qr driver disini (opsional)">
                     </flux:input>
-                    <flux:button as href="{{ route('stiker.create', ['token'=>$token]) }}">Validate</flux:button>
+                    <flux:button as href="{{ route('stiker.create', ['token' => $token]) }}">Validate</flux:button>
                 </div>
             </div>
         </div>
@@ -49,23 +49,14 @@
     </div>
 
 </div>
-<script src="https://unpkg.com/html5-qrcode"></script>
+<script src="https://unpkg.com/@zxing/library@latest"></script>
+{{-- <video id="preview" style="width:100%;"></video> --}}
 <script>
-    function initializeScanner() {
-        function onScanSuccess(decodedText, decodedResult) {
-            console.log(`Code matched = ${decodedText}`, decodedResult);
-            @this.set('token', decodedText);
-        }
-
-        let html5QrcodeScanner = new Html5QrcodeScanner(
-            "reader", {
-                fps: 10,
-                qrbox: 250 // Adjusted size for better performance on mobile
-            });
-        html5QrcodeScanner.render(onScanSuccess);
+  const codeReader = new ZXing.BrowserQRCodeReader();
+  codeReader.decodeFromVideoDevice(null, 'reader', (result, err) => {
+    if (result) {
+      alert('QR: ' + result.text);
+      @this.set('token', result.text);
     }
-
-    document.addEventListener('livewire:navigated', () => {
-        initializeScanner();
-    })
+  });
 </script>

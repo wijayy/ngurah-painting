@@ -21,7 +21,7 @@ return new class extends Migration {
             $table->string('token');
             $table->string('no_ktp');
             $table->string('no_sim');
-            $table->string('no_telepon');
+            $table->string('nomor_telepon');
             $table->string('url_foto_ktp');
             $table->string('url_foto_sim');
             $table->string(column: 'alamat')->nullable();

@@ -18,7 +18,7 @@
         <flux:navlist>
             @if (Auth::user()->role != 'driver')
                 <flux:navlist.item icon="layout-dashboard" :href="route('dashboard')"
-                    :current="request()->routeIs('dashboard')" wire:navigate>{{ __('Dashboard') }}</flux:navlist.item>
+                    :current="request()->routeIs('dashboard'    )" wire:navigate>{{ __('Dashboard') }}</flux:navlist.item>
             @else
                 <flux:navlist.item icon="user" :href="route('dashboard')" :current="request()->routeIs('dashboard')"
                     wire:navigate>{{ __('Profil') }}</flux:navlist.item>

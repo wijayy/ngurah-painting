@@ -63,7 +63,6 @@ Route::middleware(['auth', 'verify', 'staff'])->group(function () {
 
     Route::get('scan-kunjungan', StikerKunjungan::class)->name('kunjungan');
     Route::get('tambah-kunjungan', StikerCreate::class)->name('stiker.create');
-    Route::get('kunjungan', StikerIndex::class)->name('stiker.index');
 });
 
 Route::middleware(['auth', 'verify', 'admin'])->group(function () {
@@ -89,6 +88,8 @@ Route::middleware(['auth', 'verify', 'admin'])->group(function () {
     Route::get('tambah-driver', DriverCreate::class)->name('driver.create');
     Route::get('detail-driver/{slug}', DriverShow::class)->name('driver.show');
     Route::get('edit-driver/{slug}', DriverCreate::class)->name('driver.edit');
+
+    Route::get('kunjungan', StikerIndex::class)->name('stiker.index');
 
     Route::get('kunjungan/{token}', AttendanceToken::class)->name('attendance.token');
 

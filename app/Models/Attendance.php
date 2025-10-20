@@ -21,4 +21,10 @@ class Attendance extends Model
     public function transaksi() {
         return $this->hasOne(Transaction::class, 'stiker_id', 'id_stiker');
     }
+
+    public $casts = [
+        'tanggal_waktu' => 'datetime',
+        'expired_at' => 'datetime',
+        'used_at' => 'datetime',
+    ];
 }
