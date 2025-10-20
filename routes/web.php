@@ -44,6 +44,8 @@ Route::middleware(['auth', 'verify'])->group(function () {
     Volt::route('settings/password', 'settings.password')->name('settings.password');
     Volt::route('settings/appearance', 'settings.appearance')->name('settings.appearance');
 
+
+
     Route::view('dashboard', 'dashboard')->name('dashboard');
 });
 
@@ -51,6 +53,7 @@ Route::middleware(['auth', 'verify', 'user'])->group(function () {
 
     Route::get('kunjungan', AttendanceIndex::class)->name('attendance.index');
     Route::get('transaksi/', TransactionIndex::class)->name('transaction.index');
+
 });
 
 require __DIR__ . '/auth.php';
@@ -89,7 +92,7 @@ Route::middleware(['auth', 'verify', 'admin'])->group(function () {
     Route::get('detail-driver/{slug}', DriverShow::class)->name('driver.show');
     Route::get('edit-driver/{slug}', DriverCreate::class)->name('driver.edit');
 
-    Route::get('kunjungan', StikerIndex::class)->name('stiker.index');
+    // Route::get('kunjungan', StikerIndex::class)->name('stiker.index');
 
     Route::get('kunjungan/{token}', AttendanceToken::class)->name('attendance.token');
 

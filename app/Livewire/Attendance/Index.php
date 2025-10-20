@@ -7,19 +7,17 @@ use Livewire\Component;
 
 class Index extends Component
 {
-    public $attendances, $date;
-
-
+    public $kunjungan, $date, $title = "Data Kunjungan";
 
     public function mount()
     {
         $this->date = date("Y-m-d");
-        $this->attendances = $this->getAttendances();
+        $this->kunjungan = $this->getAttendances();
     }
 
     public function changeDate()
     {
-        $this->attendances = $this->getAttendances();
+        $this->kunjungan = $this->getAttendances();
     }
 
     public function getAttendances() {
