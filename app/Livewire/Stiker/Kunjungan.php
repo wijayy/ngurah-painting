@@ -16,10 +16,10 @@ class Kunjungan extends Component
     }
 
     function getLastTokenFromUrl($url)
-{
-    $parts = explode('/', rtrim($url, '/'));
-    return end($parts);
-}
+    {
+        $parts = explode('/', rtrim($url, '/'));
+        return end($parts);
+    }
 
     public function render()
     {
