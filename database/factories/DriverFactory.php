@@ -30,8 +30,8 @@ class DriverFactory extends Factory
             'no_sim' => fake()->numberBetween(111111111, 999999999),
             'sim_berlaku_hingga' => fake()->date(),
             'nomor_telepon' => fake()->phoneNumber(),
-            'url_foto_ktp' => 'http://ngurah-painting-app.me',
-            'url_foto_sim' => 'http://ngurah-painting-app.me',
+            'foto_ktp' => 'driver/ktp.png',
+            'foto_sim' => 'driver/sim.png',
             'poin' => 40,
         ];
     }

@@ -80,8 +80,8 @@ Route::middleware(['auth', 'verify', 'admin'])->group(function () {
     Route::get('edit-produk/{slug}', ProductCreate::class)->name('product.edit');
 
     Route::get('komisi', KomisiIndex::class)->name('komisi.index');
-    Route::get('tambah-komisi', KomisiCreate::class)->name('komisi.create');
-    Route::get('edit-komisi/{slug}', KomisiCreate::class)->name('komisi.edit');
+    // Route::get('tambah-komisi', KomisiCreate::class)->name('komisi.create');
+    // Route::get('edit-komisi/{slug}', KomisiCreate::class)->name('komisi.edit');
 
     Route::get('pembayaran', PembayaranIndex::class)->name('pembayaran.index');
     Route::get('tambah-pembayaran', PembayaranCreate::class)->name('pembayaran.create');

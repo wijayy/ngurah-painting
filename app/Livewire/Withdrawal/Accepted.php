@@ -2,27 +2,30 @@
 
 namespace App\Livewire\Withdrawal;
 
-use App\Models\CommisionWithdrawal;
-use App\Models\PenukaranPoin;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Session;
-use Livewire\Attributes\Validate;
 use Livewire\Component;
+use App\Models\PenukaranPoin;
 use Livewire\WithFileUploads;
+use Livewire\Attributes\Validate;
+use Illuminate\Support\Facades\DB;
+use App\Models\CommisionWithdrawal;
+use Illuminate\Support\Facades\Auth;
+use Intervention\Image\ImageManager;
+use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Storage;
+use Intervention\Image\Drivers\Gd\Driver;
 
 class Accepted extends Component
 {
 
     use WithFileUploads;
     public PenukaranPoin $penukaran;
-    public $expect, $metode_penukaran, $diajukan_at,  $disetujui_at, $ditolak_at, $id_penukaran, $driver_id, $poin, $title='Proses Penukaran Poin';
+    public $expect, $metode_penukaran, $diajukan_at, $disetujui_at, $ditolak_at, $id_penukaran, $driver_id, $poin, $title = 'Proses Penukaran Poin';
 
     #[Validate('required|string')]
     public $status = 'disetujui';
 
-    #[Validate('required_if:status,disetujui|string')]
-    public $bukti_url = '';
+    #[Validate('required_if:status,disetujui|nullable|file|image|max:5120')]
+    public $bukti_penukaran = '';
 
     #[Validate('required|integer')]
     public $jumlah = '';
@@ -63,8 +66,24 @@ class Accepted extends Component
                 return;
             }
 
+            if ($this->bukti_penukaran) {
+                // Hapus file lama jika ada (saat edit)
+
+                // Buat instance manager dengan driver GD
+                $manager = new ImageManager(Driver::class);
+
+                // Baca file dan kompres
+                $image = $manager->read($this->bukti_penukaran->getRealPath())->toJpeg(70);
+
+                // Simpan file yang sudah dikompres
+                $bukti_penukaran_path = 'driver/ktp_' . time() . '.jpg';
+                Storage::disk('public')->put($bukti_penukaran_path, (string) $image);
+            } else {
+                $bukti_penukaran_path = null;
+            }
+
             $penukaran = $this->penukaran->update([
-                'bukti_url' => $this->bukti_url ?? null,
+                'bukti_penukaran' => $bukti_penukaran_path ?? null,
                 'status' => $this->status,
                 'disetujui_at' => $this->status == 'disetujui' ? date('Y-m-d H:i:s') : null,
                 'ditolak_at' => $this->status == 'ditolak' ? date('Y-m-d H:i:s') : null,

@@ -3,6 +3,7 @@
 namespace App\Livewire\Stiker;
 
 use App\Models\Attendance;
+use App\Models\Driver;
 use Illuminate\Support\Facades\DB;
 use Livewire\Attributes\Url;
 use Livewire\Attributes\Validate;
@@ -67,6 +68,8 @@ class Create extends Component
             $stiker->used_at = $this->used_at;
             $stiker->jumlah_wisatawan = $this->jumlah;
             $stiker->save();
+
+            Driver::where('id_driver', $this->driver_id)->increment('poin', 1);
 
             $this->driver->user->aktifitas()->create([
                 'aktifitas' => "Melakukan Kunjungan dengan Nomor Stiker $this->nomor_stiker dan Jumlah Wisatawan $this->jumlah",

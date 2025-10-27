@@ -16,7 +16,7 @@ return new class extends Migration {
             $table->foreignIdFor(Driver::class, 'driver_id');
             $table->integer('poin');
             $table->integer('jumlah');
-            $table->string('bukti_url')->nullable();
+            $table->string('bukti_penukaran')->nullable();
             $table->string('token');
             $table->enum('metode_penukaran', ['cash', 'transfer'])->nullable();
             $table->string('bank')->nullable();

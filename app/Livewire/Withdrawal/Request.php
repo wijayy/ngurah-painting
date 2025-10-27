@@ -13,7 +13,7 @@ use Livewire\Component;
 
 class Request extends Component
 {
-    public $user, $user_id, $poin = 10, $metode_penukaran = 'cash', $max, $jumlah, $status= 'diajukan', $title = "Permintaan Penukaran Poin";
+    public $user, $user_id, $poin = 10, $metode_penukaran = 'cash', $max, $jumlah, $status = 'diajukan', $title = "Permintaan Penukaran Poin";
 
     #[Validate('required_if:metode_penukaran,transfer|string')]
     public $bank, $nama_rekening, $nomor_rekening;
@@ -27,6 +27,10 @@ class Request extends Component
         $this->user = Auth::user();
         $this->user_id = $this->user->id;
 
+        if ($this->user->driver->status != 'aktif') {
+            return redirect()->route('dashboard')->with('error', 'Hanya driver aktif yang dapat melakukan penukaran poin. Silahkan hubungi admin untuk mengaktifkan akun anda!');
+        }
+
         if ($this->user->driver->poin < Setting::where('key', 'minimum_penukaran_poin')->value('value')) {
             return redirect()->route('dashboard')->with('error', 'Penukaran poin tidak memenuhi kriteria minumum penukaran poin');
         }
@@ -37,9 +41,9 @@ class Request extends Component
 
     public function updatedPoin()
     {
-        if(is_numeric($this->poin) && $this->poin > $this->max){
+        if (is_numeric($this->poin) && $this->poin > $this->max) {
             $this->poin = $this->max;
-        } elseif(!is_numeric($this->poin) || $this->poin < 10){
+        } elseif (!is_numeric($this->poin) || $this->poin < 10) {
             return;
         }
         $this->jumlah = $this->poin * Setting::where('key', 'hadiah_kunjungan')->value('value');
@@ -75,7 +79,7 @@ class Request extends Component
             ]);
 
             $this->user->aktifitas()->create([
-                'aktifitas' => "Mengajukan penukaran poin sejumlah $this->poin poin",
+                'aktifitas' => "Mengajukan penukaran $this->poin poin senilai Rp. $this->jumlah",
             ]);
 
             $this->user->driver->decrement('poin', $this->poin);

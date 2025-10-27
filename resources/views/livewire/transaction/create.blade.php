@@ -42,8 +42,8 @@
                             </flux:input>
                         </div>
                         <div class="col-span-3">
-                            <flux:input wire:model="products.{{ $index }}.harga" wire:input='countTotal()'
-                                min="1" :label="'Harga'" type="number" autocomplete="none" required>
+                            <flux:input wire:model="products.{{ $index }}.subtotal" wire:input='countTotal()' readonly 
+                                 :label="'Subtotal'" type="number" autocomplete="none" required>
                             </flux:input>
                         </div>
                         {{-- <div class="">{{ $product['max'] }}</div> --}}

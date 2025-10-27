@@ -10,6 +10,7 @@ use App\Models\Transaction;
 use App\Models\TransactionDetail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
 
@@ -36,12 +37,13 @@ class Create extends Component
             'products.*.produk_id' => 'required|numeric',
             'products.*.jumlah' => 'required|numeric|min:1',
             'products.*.harga' => 'required|integer',
+            'products.*.subtotal' => 'required|integer',
         ];
     }
 
     public function addProdukItem()
     {
-        $this->products[] = ['produk_id' => null, 'harga' => null, 'jumlah' => 1];
+        $this->products[] = ['produk_id' => null, 'harga' => null, 'jumlah' => 1, 'subtotal' => 0];
     }
     public function removeProdukItem($index)
     {
@@ -74,37 +76,39 @@ class Create extends Component
         $this->tanggal = date('Y-m-d\TH:i');
         // $this->updatePrice();
         $this->products = [
-            ['produk_id' => null, 'harga' => null, 'jumlah' => 1],
+            ['produk_id' => null, 'harga' => null, 'jumlah' => 1, 'subtotal' => 0],
         ];
 
     }
 
-
     public function produkChanged($index)
     {
-
-
         $produk_id = $this->products[$index]['produk_id'];
         $produk = \App\Models\Product::find($produk_id);
         $this->products[$index]['harga'] = $produk ? $produk->harga : null;
-
-        // dd($this->products,$produk_id, $produk);
 
         $this->countTotal();
     }
 
     public function countTotal()
     {
-
         $total = 0;
-        foreach ($this->products as $item) {
+        foreach ($this->products as $key => $item) {
             if (is_numeric($item['harga']) && is_numeric($item['jumlah'])) {
                 $total += $item['harga'] * $item['jumlah'];
+                $this->products[$key]['subtotal'] = $item['harga'] ? $item['harga']* $this->products[$key]['jumlah'] : 0;
+
+                // dd($item);
+
+                Log::info($item['subtotal']);
             } else {
+                $item['subtotal'] = 0;
                 return;
             }
         }
+
         $this->total = $total;
+        // dd($this->products);
     }
 
     public function save(Request $request)
@@ -133,6 +137,14 @@ class Create extends Component
             if ($this->driver) {
                 $this->driver->user->aktifitas()->create([
                     'aktifitas' => "Customer berhasil melakukan transaksi dengan nomor transaksi $transaction->nomor_transaksi dan total harga Rp. " . number_format($this->total, 0, ',', '.')
+                ]);
+
+                Komisi::create([
+                    'driver_id' => $this->driver->id_driver,
+                    'nilai' => $this->commission,
+                    'transaksi_id' => $transaction->id_transaksi,
+                    'status' => 'pending',
+                    'persen' => Setting::where('key', 'rasio_komisi')->value('value'),
                 ]);
             }
 

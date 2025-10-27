@@ -15,9 +15,9 @@ return new class extends Migration
         Schema::create('pembayaran', function (Blueprint $table) {
             $table->id("id_pembayaran");
             $table->foreignIdFor(Komisi::class, 'komisi_id');
-            $table->integer('amount');
-            $table->enum('metode', ['cash', 'transfer']);
-            $table->string('bukti_transfer_url');
+            $table->integer('amount')->nullable();
+            $table->enum('metode', ['cash', 'transfer'])->nullable();
+            $table->string('bukti_transfer')->nullable();
             $table->string('bank')->nullable();
             $table->string('nama_rekening')->nullable();
             $table->string('nomor_rekening')->nullable();

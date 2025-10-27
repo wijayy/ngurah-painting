@@ -5,6 +5,9 @@
         <div class="font-semibold">{{ $title }}</div>
         <form wire:submit='save' class="mt-4" enctype="multipart/form-data">
             <input type="hidden" wire:model.live='expect'>
+            <div class="grid grid-cols-1 sm:grid-cols-4 gap-4">
+                <flux:input wire:model.live='bukti_penukaran' label="Bukti Penukaran" type="file" aspect="square"></flux:input>
+            </div>
             {{-- <input type="hidden" name="confirmation_amount" value="{{ $expect }}"> --}}
             <div class="grid grid-cols-2 gap-4">
                 <flux:input wire:model.live='id_penukaran' type="number" label="id_penukaran" readonly></flux:input>
@@ -17,9 +20,6 @@
                     <flux:select.option value="ditolak">Ditolak</flux:select.option>
                     <flux:select.option value="disetujui">Disetujui</flux:select.option>
                 </flux:select>
-
-                <flux:input wire:model.live='bukti_url' type="string" label="bukti_url"
-                    :required="$status == 'disetujui' ? true : false"></flux:input>
 
                 <flux:input wire:model.live='diajukan_at' type="datetime-local" label="Diajukan_At"></flux:input>
                 @if ($status == 'disetujui')

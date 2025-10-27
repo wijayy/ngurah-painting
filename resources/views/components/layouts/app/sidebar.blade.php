@@ -74,8 +74,8 @@
         <flux:spacer />
 
         <flux:navlist>
-            <flux:navlist.item icon="settings" :href="route('settings.profile')"
-                :current="request()->routeIs('settings.*')" wire:navigate>{{ __('Pengaturan') }}</flux:navlist.item>
+            {{-- <flux:navlist.item icon="settings" :href="route('settings.profile')"
+                :current="request()->routeIs('settings.*')" wire:navigate>{{ __('Pengaturan') }}</flux:navlist.item> --}}
             <form method="POST" action="{{ route('logout') }}" class="w-full">
                 @csrf
                 <flux:navlist.item icon="log-out" type="submit">{{ __('Logout') }}</flux:navlist.item>
