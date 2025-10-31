@@ -53,7 +53,6 @@ Route::middleware(['auth', 'verify', 'user'])->group(function () {
 
     Route::get('kunjungan', AttendanceIndex::class)->name('stiker.index');
     Route::get('transaksi/', TransactionIndex::class)->name('transaction.index');
-
 });
 
 require __DIR__ . '/auth.php';
@@ -79,13 +78,13 @@ Route::middleware(['auth', 'verify', 'admin'])->group(function () {
     Route::get('tambah-produk', ProductCreate::class)->name('product.create');
     Route::get('edit-produk/{slug}', ProductCreate::class)->name('product.edit');
 
-    Route::get('komisi', KomisiIndex::class)->name('komisi.index');
+    // Route::get('komisi', KomisiIndex::class)->name('komisi.index');
     // Route::get('tambah-komisi', KomisiCreate::class)->name('komisi.create');
     // Route::get('edit-komisi/{slug}', KomisiCreate::class)->name('komisi.edit');
 
-    Route::get('pembayaran', PembayaranIndex::class)->name('pembayaran.index');
-    Route::get('tambah-pembayaran', PembayaranCreate::class)->name('pembayaran.create');
-    Route::get('edit-pembayaran/{slug}', PembayaranCreate::class)->name('pembayaran.edit');
+    // Route::get('pembayaran', PembayaranIndex::class)->name('pembayaran.index');
+    // Route::get('tambah-pembayaran', PembayaranCreate::class)->name('pembayaran.create');
+    Route::get('pembayaran-komisi/{slug}', PembayaranCreate::class)->name('pembayaran.create');
 
     Route::get('driver', DriverIndex::class)->name('driver.index');
     Route::get('tambah-driver', DriverCreate::class)->name('driver.create');

@@ -5,6 +5,7 @@ namespace App\Livewire\Withdrawal;
 use App\Models\CommisionWithdrawal;
 use App\Models\Pembayaran;
 use App\Models\PenukaranPoin;
+use App\Models\Poin;
 use App\Models\Setting;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -78,6 +79,14 @@ class Request extends Component
                 'nomor_rekening' => $this->metode_penukaran == 'transfer' ? $this->nomor_rekening : null
             ]);
 
+            $this->user->driver->decrement('poin', $this->poin);
+
+            Poin::create([
+                'poin' => $this->poin,
+                'driver_id' => $this->user->driver->id_driver,
+                'status' => 'permintaan',
+                'pesan' => "Driver melakukan permintaan penukaran $this->poin poin senilai Rp. $this->jumlah. Poin sementara akan dikurangi!",
+            ]);
             $this->user->aktifitas()->create([
                 'aktifitas' => "Mengajukan penukaran $this->poin poin senilai Rp. $this->jumlah",
             ]);

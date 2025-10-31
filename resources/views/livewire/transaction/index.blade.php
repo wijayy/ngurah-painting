@@ -24,33 +24,48 @@
             x-transition:leave-end="opacity-0 scale-90" class="">
             <div class="flex py-4 gap-4 print:min-w-0 print:text-2xs min-w-5xl">
                 <div class="uppercase font-semibold text-sm w-32 ">id_transaksi</div>
-                <div class="uppercase font-semibold text-sm w-1/6">Nomor_Transaksi</div>
-                <div class="uppercase font-semibold text-sm w-1/6">Tanggal</div>
-                <div class="uppercase font-semibold text-sm w-1/6 ">stiker_id</div>
-                <div class="uppercase font-semibold text-sm w-1/6 ">status</div>
-                <div class="uppercase font-semibold text-sm w-1/6 ">total_harga</div>
-                <div class="uppercase font-semibold text-sm w-1/6  print:hidden">aksi</div>
+                <div class="uppercase font-semibold text-sm w-1/6 text-center">Nomor_Transaksi</div>
+                <div class="uppercase font-semibold text-sm w-1/6 text-center">Tanggal</div>
+                <div class="uppercase font-semibold text-sm w-1/6 text-center ">stiker</div>
+                <div class="uppercase font-semibold text-sm w-1/6 text-center ">status</div>
+                <div class="uppercase font-semibold text-sm w-1/6 text-center ">total_harga</div>
+                <div class="uppercase font-semibold text-sm w-1/6 text-center  print:hidden">aksi</div>
             </div>
             @foreach ($transaction as $key => $item)
                 <div class="flex gap-4 items-center py-2 print:min-w-0 print:text-2xs min-w-5xl">
                     <div class="w-32 ">{{ $item->id_transaksi }} </div>
-                    <div class="w-1/6">{{ $item->nomor_transaksi }} </div>
-                    <div class="w-1/6">
+                    <div class="w-1/6 text-center">{{ $item->nomor_transaksi }} </div>
+                    <div class="w-1/6 text-center">
                         {{ \Carbon\Carbon::parse($item->created_at)->format('Y-m-d H:i') }}
                     </div>
-                    <div class="w-1/6 ">{{ $item->stiker_id }}</div>
+                    <div class="w-1/6 text-center">
+                        @if ($item->stiker)
+                            <div class="">{{ $item->stiker->nomor_stiker }}</div>
+                            <div class="">{{ $item->stiker->driver->nama }}</div>
+                        @else
+                            <div class="">-</div>
+                        @endif
+                    </div>
 
-                    <div class="w-1/6 ">
+                    <div class="w-1/6 text-center ">
                         {{ $item->status }}
                     </div>
-                    <div class="w-1/6 ">
+                    <div class="w-1/6 text-center ">
                         IDR {{ number_format($item->total_harga, 0, ',', '.') }}
                     </div>
-                    <div class="w-1/6 flex print:hidden">
+                    <div class="w-1/6 text-center flex print:hidden justify-center">
                         <flux:tooltip content="Lihat Detail">
                             <div class=" cursor-pointer w-full" wire:click='detailTransaksi({{ $item->id_transaksi }})'>
                                 Detail</div>
                         </flux:tooltip>
+                        @if ($item->komisi && !$item->komisi?->pembayaran)
+                            <flux:tooltip content="Cairkan Komisi">
+                                <a class=" cursor-pointer w-full"
+                                    href="{{ route('pembayaran.create', ['slug' => $item->komisi->slug]) }}">
+                                    Cairkan Komisi</a>
+                            </flux:tooltip>
+                        @endif
+
                     </div>
                 </div>
             @endforeach
@@ -62,8 +77,27 @@
                         <div class="mb-2"><strong>Nomor Transaksi:</strong> {{ $transaksi->nomor_transaksi }}</div>
                         <div class="mb-2"><strong>Tanggal:</strong>
                             {{ \Carbon\Carbon::parse($transaksi->created_at)->format('Y-m-d H:i') }}</div>
-                        <div class="mb-2"><strong>Stiker ID:</strong> {{ $transaksi->stiker_id }}</div>
-                        <div class="mb-2 border-b border-gray-300"><strong>Status:</strong> {{ $transaksi->status }}</div>
+                        <div class="mb-2 "><strong>Status:</strong> {{ $transaksi->status }}
+                        </div>
+                        @if ($transaksi->komisi)
+                            <flux:separator></flux:separator>
+                            <div class="">Nomor Stiker : {{ $transaksi->stiker->nomor_stiker }}</div>
+                            <div class="">Jumlah Komisi : Rp.
+                                {{ number_format($transaksi->komisi->nilai, 0, ',', '.') }}
+                            </div>
+                            <div class="">Status : {{ $transaksi->komisi->status }}</div>
+
+                            @if ($transaksi->komisi->status == 'cair')
+                                <div class="w-full mt-4">
+                                    <img src="{{ asset('storage/' . $transaksi->komisi->pembayaran->bukti_transfer) }}"
+                                        alt="asdfasdf">
+                                </div>
+                            @endif
+                        @endif
+
+                        <div class="mt-4"></div>
+
+                        <flux:separator></flux:separator>
 
                         <div class="">
                             @foreach ($transaksi->transactionDetail as $item)

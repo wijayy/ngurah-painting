@@ -14,11 +14,12 @@ return new class extends Migration {
     {
         Schema::create('komisi', function (Blueprint $table) {
             $table->id('id_komisi');
+            $table->string('slug')->unique();
             $table->foreignIdFor(Transaction::class, 'transaksi_id');
             $table->foreignIdFor(Driver::class, 'driver_id');
             $table->integer('nilai');
             $table->integer('persen');
-            $table->string('status');
+            $table->string('status')->default('pending');
             $table->timestamps();
         });
     }

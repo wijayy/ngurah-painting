@@ -14,14 +14,15 @@
         @endif
         @if ($this->status === 'cair')
             <div class="grid grid-cols-1 sm:grid-cols-4 gap-4">
-                <flux:input type="file" wire:model.live="bukti_transfer" preview="{{ $preview_bukti_transfer }}" label="Bukti Transfer"></flux:input>
+                <flux:input type="file" wire:model.live="bukti_transfer" preview="{{ $preview_bukti_transfer }}"
+                    label="Bukti Transfer"></flux:input>
             </div>
         @endif
         <div class="grid grid-cols-1 md:grid-cols-6 gap-4">
 
+            {{-- @dd($nomor_transaksi) --}}
             <div class="md:col-span-3">
-                <flux:input class="" wire:model.live='komisi_id' type="number" label="Komisi ID" required
-                    :readonly="$pembayaran ? true : false">
+                <flux:input class="" wire:model.live='nomor_transaksi' readonly label="Nomor Transaksi" required>
                 </flux:input>
                 @if ($this->komisi)
                     <div class="text-sm mt-4 text-green-600">Komisi ditemukan: Nilai = {{ $this->komisi->nilai }}</div>
@@ -83,7 +84,6 @@
         </div>
 
         @if (!$errors->any())
-
             <flux:button type="submit" variant="primary">Submit</flux:button>
         @endif
     </form>

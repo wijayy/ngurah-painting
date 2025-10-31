@@ -18,7 +18,8 @@
         <flux:navlist>
             @if (Auth::user()->role != 'driver')
                 <flux:navlist.item icon="layout-dashboard" :href="route('dashboard')"
-                    :current="request()->routeIs('dashboard'    )" wire:navigate>{{ __('Dashboard') }}</flux:navlist.item>
+                    :current="request()->routeIs('dashboard'    )" wire:navigate>{{ __('Dashboard') }}
+                </flux:navlist.item>
             @else
                 <flux:navlist.item icon="user" :href="route('dashboard')" :current="request()->routeIs('dashboard')"
                     wire:navigate>{{ __('Profil') }}</flux:navlist.item>
@@ -33,12 +34,6 @@
                 </flux:navlist.item>
                 <flux:navlist.item icon="notepad-text" :href="route('transaction.index')"
                     :current="request()->routeIs('transaction.*')" wire:navigate>{{ __('Transaksi') }}
-                </flux:navlist.item>
-                <flux:navlist.item icon="plus-circle" :href="route('komisi.index')"
-                    :current="request()->routeIs('komisi.*')" wire:navigate>{{ __('Komisi') }}
-                </flux:navlist.item>
-                <flux:navlist.item icon="credit-card" :href="route('pembayaran.index')"
-                    :current="request()->routeIs('pembayaran.*')" wire:navigate>{{ __('Pembayaran') }}
                 </flux:navlist.item>
                 <flux:navlist.item icon="star" :href="route('withdrawal.index')"
                     :current="request()->routeIs('withdrawal.*')" wire:navigate>{{ __('Tukar Poin') }}
@@ -55,13 +50,17 @@
 
             @if (Auth::user()->role == 'staff')
                 <flux:navlist.item icon="scan-line" :href="route('kunjungan')"
-                    :current="request()->routeIs('kunjungan')" wire:navigate>{{ __('Kunjungan (Scan)') }}</flux:navlist.item>
+                    :current="request()->routeIs('kunjungan')" wire:navigate>{{ __('Kunjungan (Scan)') }}
+                </flux:navlist.item>
                 <flux:navlist.item icon="map-pin" :href="route('stiker.create')"
-                    :current="request()->routeIs('stiker.*')" wire:navigate>{{ __('Buat Stiker') }}</flux:navlist.item>
+                    :current="request()->routeIs('stiker.*')" wire:navigate>{{ __('Buat Stiker') }}
+                </flux:navlist.item>
                 <flux:navlist.item icon="notepad-text" :href="route('transaction.index')"
-                    :current="request()->routeIs('transaction.index')" wire:navigate>{{ __('Transaksi') }}</flux:navlist.item>
+                    :current="request()->routeIs('transaction.index')" wire:navigate>{{ __('Transaksi') }}
+                </flux:navlist.item>
                 <flux:navlist.item icon="plus" :href="route('transaction.create')"
-                    :current="request()->routeIs('transaction.create')" wire:navigate>{{ __('Tambah Transaksi') }}</flux:navlist.item>
+                    :current="request()->routeIs('transaction.create')" wire:navigate>{{ __('Tambah Transaksi') }}
+                </flux:navlist.item>
             @endif
 
             @if (Auth::user()->role == 'driver')

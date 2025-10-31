@@ -2,14 +2,12 @@
 
 namespace Database\Factories;
 
-use App\Models\Driver;
-use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Attendance>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Kunjungan>
  */
-class AttendanceFactory extends Factory
+class KunjunganFactory extends Factory
 {
     /**
      * Define the model's default state.
@@ -19,12 +17,10 @@ class AttendanceFactory extends Factory
     public function definition(): array
     {
         return [
-            'driver_id' => Driver::factory(),
-            'nomor_stiker' => 4,
-            'expired_at' => $this->faker->dateTimeBetween('now', '+1 month'),
-            'used_at' => null,
             'jumlah_wisatawan' => 4,
             'tanggal_waktu' => $this->faker->dateTimeBetween('-1 month', 'now'),
+            'nama' => $this->faker->name(),
+            'wa' => $this->faker->phoneNumber(),
         ];
     }
 }

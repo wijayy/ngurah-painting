@@ -57,6 +57,11 @@ class Driver extends Model
         return $this->hasMany(PenukaranPoin::class, 'driver_id', 'id_driver');
     }
 
+    public function poins()
+    {
+        return $this->hasMany(Poin::class, 'driver_id', 'id_driver');
+    }
+
     public function transaksi()
     {
         return $this->hasManyThrough(
@@ -67,6 +72,11 @@ class Driver extends Model
             'id_driver',        // Primary key di tabel `driver`
             'id_stiker'         // Primary key di tabel `stiker`
         );
+    }
+
+    public function getNamaAttribute()
+    {
+        return $this->user->name;
     }
 
     public static function generateToken(): string
@@ -98,7 +108,7 @@ class Driver extends Model
         return $prefix . $formattedNumber;
     }
 
-        protected function casts(): array
+    protected function casts(): array
     {
         return [
             'sim_berlaku_hingga' => 'datetime',

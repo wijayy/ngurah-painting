@@ -1,7 +1,6 @@
 <?php
 
-use App\Models\Driver;
-use App\Models\User;
+use App\Models\Attendance;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -13,14 +12,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('stiker', function (Blueprint $table) {
-            $table->id('id_stiker');
-            $table->foreignIdFor(Driver::class, 'driver_id');
-            $table->integer('nomor_stiker');
-            $table->dateTime('expired_at');
-            $table->dateTime('used_at')->nullable();
+        Schema::create('kunjungans', function (Blueprint $table) {
+            $table->id('id_kunjungan');
+            $table->foreignIdFor(Attendance::class, 'stiker_id')->constrained();
             $table->integer('jumlah_wisatawan');
             $table->dateTime('tanggal_waktu');
+            $table->string('nama');
+            $table->string('wa');
             $table->timestamps();
         });
     }
@@ -30,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('attendances');
+        Schema::dropIfExists('kunjungans');
     }
 };

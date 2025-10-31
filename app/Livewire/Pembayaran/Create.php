@@ -5,6 +5,7 @@ namespace App\Livewire\Pembayaran;
 use App\Models\Komisi;
 use Livewire\Component;
 use App\Models\Pembayaran;
+// use App\Models\Transaction;
 use Livewire\Attributes\Validate;
 use Illuminate\Support\Facades\DB;
 use Intervention\Image\ImageManager;
@@ -16,11 +17,10 @@ class Create extends Component
 {
 
     use WithFileUploads;
-
     public $title, $bank = '', $nama_rekening = '', $nomor_rekening = '', $pembayaran, $komisi, $preview_bukti_transfer = '';
 
     #[Validate('required|string')]
-    public $status = 'cair';
+    public $status = 'cair', $nomor_transaksi = '';
 
     #[Validate('required|numeric')]
     public $amount = 0, $komisi_id;
@@ -58,42 +58,22 @@ class Create extends Component
     public function mount($slug = null)
     {
         if ($slug) {
-            $this->pembayaran = \App\Models\Pembayaran::where('id_pembayaran', $slug)->firstOrFail();
-            $this->komisi_id = $this->pembayaran->komisi_id;
-            $this->amount = $this->pembayaran->amount;
-            $this->metode = $this->pembayaran->metode;
-            $this->bank = $this->pembayaran->bank;
-            $this->preview_bukti_transfer = $this->pembayaran->bukti_transfer;
-            $this->nama_rekening = $this->pembayaran->nama_rekening;
-            $this->nomor_rekening = $this->pembayaran->nomor_rekening;
-            $this->nomor_referensi = $this->pembayaran->nomor_referensi;
-            $this->catatan = $this->pembayaran->catatan;
-            $this->status = $this->pembayaran->status;
-            $this->waktu_pembayaran = $this->pembayaran->waktu_pembayaran?->format('Y-m-d\TH:i');
-            $this->title = "Edit Pembayaran {$this->pembayaran->id_pembayaran}";
-        } else {
-            $this->title = "Tambah Pembayaran";
-        }
-    }
+            $komisi = \App\Models\Komisi::where('slug', $slug)->firstOrFail();
 
-    public function updated($komisi_id)
-    {
-        $this->komisi = \App\Models\Komisi::where('id_komisi', $this->komisi_id)->first();
-        if ($this->komisi) {
-            // Cek apakah komisi sudah punya pembayaran
-            $sudahAdaPembayaran = \App\Models\Pembayaran::where('komisi_id', $this->komisi_id)->exists();
-            if ($sudahAdaPembayaran && !$this->pembayaran) {
-                $this->addError('komisi_id', 'Komisi ini sudah memiliki pembayaran.');
-                $this->amount = 0;
-                return;
+            if ($komisi->pembayaran) {
+                return redirect(route('transaction.index'))->with('error', 'Komisi ini sudah memiliki pembayaran.');
             }
-            $this->amount = $this->komisi->nilai;
-        } else {
-            $this->amount = 0;
-        }
 
-        if ($this->status == 'batal') {
-            $this->amount = 0;
+            $this->komisi_id = $komisi->id_komisi;
+
+            // dd($this->komisi_id);
+            $this->komisi = $komisi;
+            $this->nomor_transaksi = $komisi->nomor_transaksi;
+            $this->amount = $komisi->nilai;
+
+            $this->title = "Pembayaran Komisi untuk transaksi {$komisi->nomor_transaksi}";
+        } else {
+            return redirect(route('transaction.index'))->with('error', 'Transaksi tidak ditemukan');
         }
     }
 
@@ -122,18 +102,22 @@ class Create extends Component
 
             $validated['bukti_transfer'] = $bukti_transfer_path;
 
-            \App\Models\Pembayaran::updateOrCreate(
-                ['id_pembayaran' => $this->pembayaran ? $this->pembayaran->id_pembayaran : null],
+            \App\Models\Pembayaran::create(
                 $validated
             );
 
+            Komisi::where('id_komisi', $this->komisi_id)->update([
+                'status' => $this->status == 'cair' ? "cair" : "ditolak",
+            ]);
+
+
             $this->komisi->driver->user->aktifitas()->create([
-                'aktifitas' => $this->pembayaran ? "Mengubah data pembayaran untuk komisi ID $this->komisi_id dengan jumlah Rp. " . number_format($this->amount, 0, ',', '.') : "Pembayaran untuk komisi ID $this->komisi_id dengan jumlah Rp. " . number_format($this->amount, 0, ',', '.') . " telah dilakukan",
+                'aktifitas' => $this->status == 'cair' ? "Pembayaran untuk komisi untuk transaksi $this->nomor_transaksi dengan jumlah Rp. " . number_format($this->amount, 0, ',', '.') . " telah dilakukan" : "Pembayaran untuk komisi untuk transaksi $this->nomor_transaksi dengan jumlah Rp. " . number_format($this->amount, 0, ',', '.') . " ditolak",
             ]);
 
             DB::commit();
             session()->flash('message', 'Data pembayaran berhasil disimpan.');
-            return redirect(route('komisi.index'));
+            return redirect(route('transaction.index'))->with('success', 'Data pembayaran berhasil disimpan.');
         } catch (\Throwable $th) {
             DB::rollBack();
             if (config('app.debug') == true) {
@@ -142,7 +126,6 @@ class Create extends Component
                 return back()->with('error', $th->getMessage());
             }
         }
-
     }
 
     public function render()

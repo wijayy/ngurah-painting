@@ -4,6 +4,7 @@ namespace App\Livewire\Stiker;
 
 use App\Models\Attendance;
 use App\Models\Driver;
+use App\Models\Poin;
 use Illuminate\Support\Facades\DB;
 use Livewire\Attributes\Url;
 use Livewire\Attributes\Validate;
@@ -57,17 +58,29 @@ class Create extends Component
                 return;
             }
 
-            // Simpan data stiker baru
-            $stiker = new Attendance();
-            $stiker->nomor_stiker = $this->nomor_stiker;
-            $stiker->driver_id = $this->driver_id;
-            $stiker->nama = $this->nama;
-            $stiker->wa = $this->wa;
-            $stiker->tanggal_waktu = $this->tanggal_waktu;
-            $stiker->expired_at = $this->expired_at;
-            $stiker->used_at = $this->used_at;
-            $stiker->jumlah_wisatawan = $this->jumlah;
-            $stiker->save();
+            Attendance::create([
+                'driver_id' => $this->driver_id,
+                'nomor_stiker' => $this->nomor_stiker,
+                'expired_at' => $this->expired_at,
+                'used_at' => $this->used_at,
+                'jumlah_wisatawan' => $this->jumlah,
+                'tanggal_waktu' => $this->tanggal_waktu,
+            ]);
+
+            Kunjungan::create([
+                'stiker_id' => $this->id_stiker,
+                'nama' => $this->nama,
+                'wa' => $this->wa,
+                'jumlah_wisatawan' => $this->jumlah,
+                'tanggal_waktu' => $this->tanggal_waktu,
+            ]);
+
+            Poin::create([
+                'driver_id' => $this->driver_id,
+                'poin' => 1,
+                'status' => 'penambahan',
+                'pesan' => "Driver melakukan kunjungan tanggal $this->tanggal_waktu dengan membawa $this->jumlah orang",
+            ]);
 
             Driver::where('id_driver', $this->driver_id)->increment('poin', 1);
 

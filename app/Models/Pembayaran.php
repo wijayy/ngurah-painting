@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Cviebrock\EloquentSluggable\Sluggable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -25,6 +26,4 @@ class Pembayaran extends Model
     {
         return $this->belongsTo(Komisi::class, 'komisi_id', 'id_komisi');
     }
-
-
 }

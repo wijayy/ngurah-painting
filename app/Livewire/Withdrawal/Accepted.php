@@ -89,6 +89,21 @@ class Accepted extends Component
                 'ditolak_at' => $this->status == 'ditolak' ? date('Y-m-d H:i:s') : null,
                 'jumlah' => $this->jumlah,
             ]);
+
+            $this->penukaran->driver->poins()->create([
+                'poin' => $this->poin,
+                'status' => $this->status == 'disetujui' ? 'penukaran' : 'penolakan',
+                'pesan' => $this->status == 'disetujui' ? "Penukaran $this->poin poin senilai Rp. $this->jumlah Disetujui" : "Penukaran $this->poin poin senilai Rp. $this->jumlah ditolak. Poin sudah dikembalikan ke driver",
+            ]);
+
+            $this->penukaran->driver->user->aktifitas()->create([
+                'aktifitas' => $this->status == 'disetujui' ? "Menyetujui penukaran $this->poin poin senilai Rp. $this->jumlah" : "Menolak penukaran $this->poin poin senilai Rp. $this->jumlah",
+            ]);
+
+            if ($this->status == 'ditolak') {
+                $this->penukaran->driver->increment('poin', $this->poin);
+            }
+
             DB::commit();
 
             return redirect(route('withdrawal.index'))->with('success', $this->status == 'disetujui' ? 'Penukaran poin berhasil disetujui' : 'Penukaran poin berhasil ditolak');
@@ -101,8 +116,6 @@ class Accepted extends Component
                 return back()->with('error', $th->getMessage());
             }
         }
-
-
     }
 
 
